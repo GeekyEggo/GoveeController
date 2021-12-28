@@ -1,4 +1,4 @@
-﻿namespace GoveeController.GoveeApi.Models
+﻿namespace GoveeController.Govee.Models
 {
     using System;
 

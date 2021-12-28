@@ -1,4 +1,4 @@
-﻿namespace GoveeController.GoveeApi.Models
+﻿namespace GoveeController.Govee.Models
 {
     /// <summary>
     /// Provides a base response for a request to the Govee API.

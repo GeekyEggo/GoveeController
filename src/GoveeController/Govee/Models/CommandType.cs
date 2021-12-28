@@ -1,8 +1,8 @@
-﻿namespace GoveeController.GoveeApi.Models
+﻿namespace GoveeController.Govee.Models
 {
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
-    using GoveeController.GoveeApi.Serialization;
+    using GoveeController.Serialization;
 
     /// <summary>
     /// Provides an enumeration of possible commands for a device.

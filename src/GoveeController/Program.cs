@@ -1,6 +1,6 @@
 ﻿namespace GoveeController
 {
-    using GoveeController.GoveeApi;
+    using GoveeController.Govee;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -29,7 +29,7 @@
             new HostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddSingleton(provider =>
+                    services.AddSingleton<IGoveeClient>(provider =>
                     {
                         var client = new GoveeHttpClient();
                         client.SetApiKey(appSettingsConfig.GetValue<string>("ApiKey"));

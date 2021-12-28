@@ -1,4 +1,4 @@
-﻿namespace GoveeController.GoveeApi.Serialization
+﻿namespace GoveeController.Serialization
 {
     using System.Reflection;
     using System.Runtime.Serialization;
