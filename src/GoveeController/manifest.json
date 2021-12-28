@@ -1,1 +1,36 @@
-﻿
+﻿{
+  "$schema": "https://raw.githubusercontent.com/GeekyEggo/SharpDeck/master/src/SharpDeck.PropertyInspector/manifest-schema.json",
+  "Name": "Govee Controller",
+  "Version": "1.0.0",
+  "Author": "Richard Herman",
+  "Actions": [
+    {
+      "Name": "On / Off",
+      "UUID": "com.geekyeggo.goveecontroller.turnonoff",
+      "Icon": "Images/TurnOnOff/Icon",
+      "Tooltip": "Turn a device on or off",
+      "States": [
+        {
+          "FontSize": "18",
+          "Image": "Images/TurnOnOff/Image",
+          "TitleAlignment": "middle"
+        }
+      ]
+    }
+  ],
+  "Category": "Govee Controller",
+  "CategoryIcon": "Images/Plugin/CategoryIcon",
+  "CodePath": "GoveeController.exe",
+  "Description": "A counter plugin example",
+  "Icon": "Images/Plugin/Icon",
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "4.1"
+  },
+  "OS": [
+    {
+      "MinimumVersion": "10",
+      "Platform": "windows"
+    }
+  ]
+}
