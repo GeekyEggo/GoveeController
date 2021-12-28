@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using GoveeController.Govee;
-    using GoveeController.Govee.Models;
     using SharpDeck;
     using SharpDeck.Events.Received;
 
@@ -25,9 +24,12 @@
         protected override async Task OnKeyDown(ActionEventArgs<KeyPayload> args)
         {
             var devices = await this.GoveeClient.GetDevicesAsync();
-            foreach (var device in devices.Data?.Devices ?? Array.Empty<Device>())
+            if (devices.Data?.Devices != null)
             {
-                await this.GoveeClient.TurnOnOffAsync(device.Id, device.Model, true);
+                foreach (var device in devices.Data.Devices)
+                {
+                   await this.GoveeClient.TurnOnOffAsync(device.Device, device.Model, true);
+                }
             }
         }
     }

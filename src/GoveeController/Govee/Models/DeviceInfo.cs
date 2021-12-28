@@ -5,19 +5,8 @@
     /// <summary>
     /// Provides information about a device.
     /// </summary>
-    public class Device
+    public class DeviceInfo : DeviceIdentifier
     {
-        /// <summary>
-        /// Gets or sets the MAC address of the device. Use <see cref="Id"/> and <see cref="Model"/> to identify the target device.
-        /// </summary>
-        [JsonPropertyName("device")]
-        public string Id { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the model of the device.
-        /// </summary>
-        public string Model { get; set; } = string.Empty;
-
         /// <summary>
         /// Gets or sets the name of the device.
         /// </summary>

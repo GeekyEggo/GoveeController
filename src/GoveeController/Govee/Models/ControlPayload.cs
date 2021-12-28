@@ -6,12 +6,12 @@
     /// Provides a payload that allows for controlling a Govee device.
     /// </summary>
     /// <typeparam name="TCommandValue">The type of the <see cref="Command.Value"/>.</typeparam>
-    public class ControlPayload<TCommandValue>
+    public class ControlPayload<TCommandValue> : DeviceIdentifier
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlPayload"/> class.
         /// </summary>
-        /// <param name="device">The device MAC address, this is equivalent to <see cref="Device.Id"/>.</param>
+        /// <param name="device">The device MAC address.</param>
         /// <param name="model">The model of the device.</param>
         /// <param name="commandName">The name of the command.</param>
         /// <param name="commandValue">The value of the command.</param>
@@ -21,16 +21,6 @@
             this.Model = model;
             this.Command = new Command<TCommandValue>(commandName, commandValue);
         }
-
-        /// <summary>
-        /// Gets or sets the MAC address of the device; this is equivalent to <see cref="Device.Id"/>.
-        /// </summary>
-        public string Device { get; init; }
-
-        /// <summary>
-        /// Gets or sets the model of the device.
-        /// </summary>
-        public string Model { get; init; }
 
         /// <summary>
         /// Gets or sets the command.
