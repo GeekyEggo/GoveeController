@@ -1,6 +1,7 @@
 ﻿namespace GoveeController
 {
     using GoveeController.GoveeApi;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using SharpDeck.Extensions.Hosting;
@@ -20,8 +21,22 @@
             System.Diagnostics.Debugger.Launch();
 #endif
 
+            var appSettingsConfig = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
             new HostBuilder()
-                .ConfigureServices(services => services.AddSingleton<GoveeHttpClient>())
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton(provider =>
+                    {
+                        var client = new GoveeHttpClient();
+                        client.SetApiKey(appSettingsConfig.GetValue<string>("ApiKey"));
+
+                        return client;
+                    });
+                })
                 .UseStreamDeck()
                 .Start();
         }
