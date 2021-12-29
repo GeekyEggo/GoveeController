@@ -6,6 +6,7 @@
     using System.Text.Json;
     using GoveeController.Extensions;
     using GoveeController.Govee.Models;
+    using GoveeController.Serialization;
 
     /// <summary>
     /// Provides methods for interacting with Govee devices.
@@ -54,6 +55,13 @@
         }
 
         /// <inheritdoc/>
+        public async Task<Response<DeviceState>> GetDeviceStateAsync(string device, string model, CancellationToken cancellationToken = default)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"state?device={Uri.EscapeDataString(device)}&model={Uri.EscapeDataString(model)}");
+            return await this.SendAsync<Response<DeviceState>>(request, cancellationToken);
+        }
+
+        /// <inheritdoc/>
         public Task<Response> SetBrightnessAsync(string device, string model, int brightness, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<int>(device, model, CommandNames.Brightness, brightness.InRangeOf(0, 100));
@@ -63,8 +71,8 @@
         /// <inheritdoc/>
         public Task<Response> SetColorAsync(string device, string model, int red, int green, int blue, CancellationToken cancellationToken = default)
         {
-            var rgbValue = new RgbCommandValue(red.InColorRange(), green.InColorRange(), blue.InColorRange());
-            var payload = new ControlPayload<RgbCommandValue>(device, model, CommandNames.Color, rgbValue);
+            var rgbValue = new RgbValue(red.InColorRange(), green.InColorRange(), blue.InColorRange());
+            var payload = new ControlPayload<RgbValue>(device, model, CommandNames.Color, rgbValue);
 
             return this.ControlAsync(payload, cancellationToken);
         }
@@ -79,7 +87,7 @@
         /// <inheritdoc/>
         public Task<Response> TurnOnOffAsync(string device, string model, bool turnOn, CancellationToken cancellationToken = default)
         {
-            var payload = new ControlPayload<string>(device, model, CommandNames.Turn, turnOn ? "on" : "off");
+            var payload = new ControlPayload<string>(device, model, CommandNames.Turn, turnOn ? OnOffBooleanJsonConverter.TRUE : OnOffBooleanJsonConverter.FALSE);
             return this.ControlAsync(payload, cancellationToken);
         }
 

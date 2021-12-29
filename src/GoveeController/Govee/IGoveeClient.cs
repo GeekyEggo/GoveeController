@@ -21,6 +21,15 @@
         Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Gets the state of the device asynchronously.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response containing the state of the device.</returns>
+        Task<Response<DeviceState>> GetDeviceStateAsync(string device, string model, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Sets the brightness of the device asynchronously.
         /// </summary>
         /// <param name="device">The device.</param>

@@ -24,11 +24,17 @@
         protected override async Task OnKeyDown(ActionEventArgs<KeyPayload> args)
         {
             var devices = await this.GoveeClient.GetDevicesAsync();
+
             if (devices.Data?.Devices != null)
             {
                 foreach (var device in devices.Data.Devices)
                 {
-                   await this.GoveeClient.TurnOnOffAsync(device.Device, device.Model, true);
+                    var state = await this.GoveeClient.GetDeviceStateAsync(device.Device, device.Model);
+                    if (state.IsSuccess
+                        && state?.Data?.Properties != null)
+                    {
+                        await this.GoveeClient.TurnOnOffAsync(device.Device, device.Model, !state.Data.Properties.IsTurnedOn);
+                    }
                 }
             }
         }

@@ -3,9 +3,9 @@
     using System.Text.Json.Serialization;
 
     /// <summary>
-    /// Provides a value of a color command.
+    /// Provides a value that represents a color.
     /// </summary>
-    public record RgbCommandValue(
+    public record RgbValue(
         [property: JsonPropertyName("r")] int Red,
         [property: JsonPropertyName("g")] int Green,
         [property: JsonPropertyName("b")] int Blue);

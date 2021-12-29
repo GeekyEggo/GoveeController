@@ -9,13 +9,13 @@
     /// Provides a <see cref="JsonConverter{T}"/> capable of handling <see cref="EnumMemberAttribute"/>.
     /// </summary>
     /// <typeparam name="TEnum">The type of the enum.</typeparam>
-    public class JsonStringEnumMemberConverter<TEnum> : JsonConverter<TEnum>
+    public class EnumMemberJsonConverter<TEnum> : JsonConverter<TEnum>
         where TEnum : struct, Enum
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="JsonStringEnumMemberConverter{TEnum}"/> class.
+        /// Initializes a new instance of the <see cref="EnumMemberJsonConverter{TEnum}"/> class.
         /// </summary>
-        public JsonStringEnumMemberConverter()
+        public EnumMemberJsonConverter()
             : base()
         {
             var type = typeof(TEnum);

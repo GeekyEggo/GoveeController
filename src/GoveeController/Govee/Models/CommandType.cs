@@ -7,7 +7,7 @@
     /// <summary>
     /// Provides an enumeration of possible commands for a device.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumMemberConverter<CommandType>))]
+    [JsonConverter(typeof(EnumMemberJsonConverter<CommandType>))]
     public enum CommandType
     {
         /// <summary>
