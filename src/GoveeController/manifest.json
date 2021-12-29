@@ -7,22 +7,22 @@
     {
       "Name": "On / Off",
       "UUID": "com.geekyeggo.goveecontroller.turnonoff",
-      "Icon": "Images/TurnOnOff/Icon",
+      "Icon": "Images/TurnOnOff/Action",
       "Tooltip": "Turn a device on or off",
       "States": [
         {
           "FontSize": "18",
-          "Image": "Images/TurnOnOff/Image",
+          "Image": "Images/TurnOnOff/Key",
           "TitleAlignment": "middle"
         }
       ]
     }
   ],
   "Category": "Govee Controller",
-  "CategoryIcon": "Images/Plugin/CategoryIcon",
+  "CategoryIcon": "Images/GoveeController/Category",
   "CodePath": "GoveeController.exe",
   "Description": "A counter plugin example",
-  "Icon": "Images/Plugin/Icon",
+  "Icon": "Images/GoveeController/Icon",
   "SDKVersion": 2,
   "Software": {
     "MinimumVersion": "4.1"
