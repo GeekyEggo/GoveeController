@@ -20,14 +20,14 @@
     },
     {
       "Name": "Set Brightness",
-      "UUID": "com.geekyeggo.goveecontroller.setbrightness",
-      "Icon": "Images/SetBrightness/Action",
+      "UUID": "com.geekyeggo.goveecontroller.brightness",
+      "Icon": "Images/Brightness/Action",
       "Tooltip": "Sets the brightness of a device",
-      "PropertyInspectorPath": "pi/setbrightness.html",
+      "PropertyInspectorPath": "pi/brightness.html",
       "States": [
         {
           "FontSize": "12",
-          "Image": "Images/SetBrightness/Key",
+          "Image": "Images/Brightness/Key",
           "TitleAlignment": "bottom"
         }
       ]

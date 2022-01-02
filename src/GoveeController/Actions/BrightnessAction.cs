@@ -10,14 +10,14 @@
     /// <summary>
     /// Provides an action that is capable of setting the brightness of a device.
     /// </summary>
-    [StreamDeckAction("com.geekyeggo.goveecontroller.setbrightness")]
-    public class SetBrightnessAction : ActionBase<SetBrightnessSettings>
+    [StreamDeckAction("com.geekyeggo.goveecontroller.brightness")]
+    public class BrightnessAction : ActionBase<BrightnessSettings>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SetBrightnessAction"/> class.
+        /// Initializes a new instance of the <see cref="BrightnessAction"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        public SetBrightnessAction(IGoveeService goveeService)
+        public BrightnessAction(IGoveeService goveeService)
             : base(goveeService, CommandType.Brightness)
         {
         }
@@ -25,7 +25,7 @@
         /// <inheritdoc/>
         protected override async Task OnKeyDown(ActionEventArgs<KeyPayload> args)
         {
-            var settings = args.Payload.GetSettings<SetBrightnessSettings>();
+            var settings = args.Payload.GetSettings<BrightnessSettings>();
             var device = await this.GoveeService.GetDeviceInfoAsync(settings.DeviceId);
 
             await this.GoveeService.Client.SetBrightnessAsync(device.Device, device.Model, settings.Brightness);

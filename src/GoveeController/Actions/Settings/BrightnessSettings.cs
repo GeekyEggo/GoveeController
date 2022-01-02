@@ -1,9 +1,9 @@
 ﻿namespace GoveeController.Actions.Settings
 {
     /// <summary>
-    /// Provides settings for <see cref="SetBrightnessAction"/>.
+    /// Provides settings for <see cref="BrightnessAction"/>.
     /// </summary>
-    public class SetBrightnessSettings
+    public class BrightnessSettings
     {
         /// <summary>
         /// Gets or sets the device identifier.
