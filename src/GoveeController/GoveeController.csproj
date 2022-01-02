@@ -27,6 +27,9 @@
 		<None Update="Images\**\*.*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Update="pi\**\*.*">
+		    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="*.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

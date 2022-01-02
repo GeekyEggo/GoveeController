@@ -1,7 +1,7 @@
 ﻿namespace GoveeController.Actions
 {
-    using System.Threading.Tasks;
-    using GoveeController.Govee;
+    using GoveeController.Actions.Settings;
+    using GoveeController.Services;
     using SharpDeck;
     using SharpDeck.Events.Received;
 
@@ -9,34 +9,41 @@
     /// Provides an action that is capable of controlling the on/off state of a device.
     /// </summary>
     [StreamDeckAction("com.geekyeggo.goveecontroller.turnonoff")]
-    public class TurnOnOffAction : ActionBase
+    public class TurnOnOffAction : ActionBase<TurnOnOffSettings>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TurnOnOffAction"/> class.
         /// </summary>
-        /// <param name="goveeClient">The Govee client.</param>
-        public TurnOnOffAction(IGoveeClient goveeClient)
-            : base(goveeClient)
+        /// <param name="goveeService">The Govee service.</param>
+        public TurnOnOffAction(IGoveeService goveeService)
+            : base(goveeService)
         {
         }
 
         /// <inheritdoc/>
         protected override async Task OnKeyDown(ActionEventArgs<KeyPayload> args)
         {
-            var devices = await this.GoveeClient.GetDevicesAsync();
+            // Get the settings, and attempt to get the device.
+            var settings = args.Payload.GetSettings<TurnOnOffSettings>();
+            var device = await this.GoveeService.GetDeviceInfoAsync(settings.DeviceId);
 
-            if (devices.Data?.Devices != null)
+            // Determine the operation to perform.
+            var turnOn = settings.Operation == TurnOnOffOperation.TurnOn;
+            if (settings.Operation == TurnOnOffOperation.Toggle)
             {
-                foreach (var device in devices.Data.Devices)
+                var state = await this.GoveeService.Client.GetDeviceStateAsync(device.Device, device.Model);
+                if (!state.IsSuccess)
                 {
-                    var state = await this.GoveeClient.GetDeviceStateAsync(device.Device, device.Model);
-                    if (state.IsSuccess
-                        && state?.Data?.Properties != null)
-                    {
-                        await this.GoveeClient.TurnOnOffAsync(device.Device, device.Model, !state.Data.Properties.IsTurnedOn);
-                    }
+                    await this.ShowAlertAsync();
+                    return;
                 }
+
+                turnOn = state.Data.Properties?.IsTurnedOn == false;
             }
+
+            // Change the state of the device.
+            await this.GoveeService.Client.TurnOnOffAsync(device.Device, device.Model, turnOn);
+            await this.ShowOkAsync();
         }
     }
 }

@@ -11,7 +11,7 @@
         /// <summary>
         /// Gets or sets the properties that represent the state of the device..
         /// </summary>
-        [JsonConverter(typeof(PropertyArrayToObjectJsonConverter<DeviceStatePartialProperties>))]
-        public DeviceStatePartialProperties? Properties { get; set; }
+        [JsonConverter(typeof(DeviceStatePropertiesJsonConverter))]
+        public DeviceStateProperties? Properties { get; set; }
     }
 }
