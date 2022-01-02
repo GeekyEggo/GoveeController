@@ -5,7 +5,7 @@
     /// <summary>
     /// Provides information about a device.
     /// </summary>
-    public class DeviceInfo : DeviceIdentifier
+    public class Device : DeviceIdentifier
     {
         /// <summary>
         /// Gets or sets the name of the device.

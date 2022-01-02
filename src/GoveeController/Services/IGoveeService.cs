@@ -28,6 +28,6 @@
         /// <param name="deviceId">The device identifier.</param>
         /// <param name="cancellationToken">The optional cancellation token.</param>
         /// <returns>The device information.</returns>
-        Task<DeviceInfo> GetDeviceInfoAsync(string deviceId, CancellationToken cancellationToken = default);
+        Task<Device> GetDeviceInfoAsync(string? deviceId, CancellationToken cancellationToken = default);
     }
 }

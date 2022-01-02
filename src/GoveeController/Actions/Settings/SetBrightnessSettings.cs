@@ -1,9 +1,9 @@
 ﻿namespace GoveeController.Actions.Settings
 {
     /// <summary>
-    /// Provides settings for turning a device on or off.
+    /// Provides settings for <see cref="SetBrightnessAction"/>.
     /// </summary>
-    public class TurnOnOffSettings
+    public class SetBrightnessSettings
     {
         /// <summary>
         /// Gets or sets the device identifier.
@@ -11,8 +11,8 @@
         public string? DeviceId { get; set; }
 
         /// <summary>
-        /// Gets or sets the operation to perform.
+        /// Gets or sets the brightness.
         /// </summary>
-        public TurnOnOffOperation Operation { get; set; } = TurnOnOffOperation.Toggle;
+        public int Brightness { get; set; }
     }
 }

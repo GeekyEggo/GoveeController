@@ -14,7 +14,7 @@
         /// The device can be turned on / off.
         /// </summary>
         [EnumMember(Value = CommandNames.Turn)]
-        Turn = 0,
+        TurnOnOff = 0,
 
         /// <summary>
         /// The brightness can be controlled.

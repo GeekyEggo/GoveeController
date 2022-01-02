@@ -1,6 +1,7 @@
 ﻿namespace GoveeController.Actions
 {
     using GoveeController.Actions.Settings;
+    using GoveeController.Govee.Models;
     using GoveeController.Services;
     using SharpDeck;
     using SharpDeck.Events.Received;
@@ -16,7 +17,7 @@
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
         public TurnOnOffAction(IGoveeService goveeService)
-            : base(goveeService)
+            : base(goveeService, CommandType.TurnOnOff)
         {
         }
 

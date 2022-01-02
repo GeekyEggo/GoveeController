@@ -12,9 +12,23 @@
       "PropertyInspectorPath": "pi/turnonoff.html",
       "States": [
         {
-          "FontSize": "18",
+          "FontSize": "12",
           "Image": "Images/TurnOnOff/Key",
-          "TitleAlignment": "middle"
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Set Brightness",
+      "UUID": "com.geekyeggo.goveecontroller.setbrightness",
+      "Icon": "Images/SetBrightness/Action",
+      "Tooltip": "Sets the brightness of a device",
+      "PropertyInspectorPath": "pi/setbrightness.html",
+      "States": [
+        {
+          "FontSize": "12",
+          "Image": "Images/SetBrightness/Key",
+          "TitleAlignment": "bottom"
         }
       ]
     }

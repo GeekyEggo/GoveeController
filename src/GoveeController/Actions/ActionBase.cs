@@ -1,5 +1,6 @@
 ﻿namespace GoveeController.Actions
 {
+    using GoveeController.Govee.Models;
     using GoveeController.Services;
     using SharpDeck;
     using SharpDeck.PropertyInspectors;
@@ -15,8 +16,17 @@
         /// Initializes a new instance of the <see cref="ActionBase"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        protected ActionBase(IGoveeService goveeService)
-            => this.GoveeService = goveeService;
+        /// <param name="command">The command this instance supports.</param>
+        protected ActionBase(IGoveeService goveeService, CommandType command)
+        {
+            this.Command = command;
+            this.GoveeService = goveeService;
+        }
+
+        /// <summary>
+        /// Gets the command this instance supports.
+        /// </summary>
+        protected virtual CommandType Command { get; }
 
         /// <summary>
         /// Gets the Govee service used to interact with devices.
@@ -49,12 +59,13 @@
             var result = await this.GoveeService.GetDevicesAsync(useCache);
             if (result.IsSuccess)
             {
-                return new OptionsPayload(
-                    result.Data
+                var supportedDevices = result
+                    .Data
                     .Devices
-                    .Where(d => d.IsControllable)
-                    .OrderBy(d => d.DeviceName)
-                    .Select(d => new Option(d.DeviceName, d.Device)));
+                    .Where(d => d.IsControllable && d.SupportedCommands.Contains(this.Command))
+                    .OrderBy(d => d.DeviceName);
+
+                return new OptionsPayload(supportedDevices.Select(d => new Option(d.DeviceName, d.Device)));
             }
             else
             {

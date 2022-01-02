@@ -10,6 +10,6 @@
         /// <summary>
         /// Gets or sets the devices.
         /// </summary>
-        public DeviceInfo[] Devices { get; set; } = Array.Empty<DeviceInfo>();
+        public Device[] Devices { get; set; } = Array.Empty<Device>();
     }
 }

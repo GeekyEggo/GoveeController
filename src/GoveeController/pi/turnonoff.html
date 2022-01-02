@@ -3,7 +3,7 @@
 
 <head lang="en-gb">
     <meta charset="utf-8">
-    <title>Settings</title>
+    <title>Turn On/Off Action Settings</title>
     <script src="sdpi.js"></script>
 </head>
 
@@ -11,6 +11,7 @@
     <div class="container">
         <sdpi-select id="deviceId" label="Device" datasource="GetDevicesAsync" refresh="ReloadDevicesAsync"></sdpi-select>
         <sdpi-select id="operation" label="Action" default="0">
+            <option value="" disabled selected hidden></option>
             <option value="0">Toggle On/Off</option>
             <option value="1">Turn On</option>
             <option value="2">Turn Off</option>

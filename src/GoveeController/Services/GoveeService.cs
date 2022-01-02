@@ -55,8 +55,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task<DeviceInfo> GetDeviceInfoAsync(string deviceId, CancellationToken cancellationToken = default)
+        public async Task<Device> GetDeviceInfoAsync(string? deviceId, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException(nameof(deviceId), "Device identifier cannot be null.");
+            }
+
             var devices = await this.GetDevicesAsync(useCache: true, cancellationToken: cancellationToken);
             if (!devices.IsSuccess)
             {
