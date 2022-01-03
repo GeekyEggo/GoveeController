@@ -31,8 +31,8 @@
         public CommandType[] SupportedCommands { get; set; } = Array.Empty<CommandType>();
 
         /// <summary>
-        /// Gets or sets the properties.
+        /// Gets or sets the additional properties.
         /// </summary>
-        public object? Properties { get; set; }
+        public DeviceProperties? Properties { get; set; }
     }
 }

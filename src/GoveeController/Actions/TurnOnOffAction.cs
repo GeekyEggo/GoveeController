@@ -10,7 +10,7 @@
     /// Provides an action that is capable of controlling the on/off state of a device.
     /// </summary>
     [StreamDeckAction("com.geekyeggo.goveecontroller.turnonoff")]
-    public class TurnOnOffAction : ActionBase<TurnOnOffSettings>
+    public class TurnOnOffAction : ActionBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TurnOnOffAction"/> class.

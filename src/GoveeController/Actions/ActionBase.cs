@@ -9,8 +9,7 @@
     /// <summary>
     /// Provides a base class that supports all actions.
     /// </summary>
-    public abstract class ActionBase<TSettings> : StreamDeckAction<TSettings>
-        where TSettings: class
+    public abstract class ActionBase : StreamDeckAction
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionBase"/> class.
@@ -18,6 +17,7 @@
         /// <param name="goveeService">The Govee service.</param>
         /// <param name="command">The command this instance supports.</param>
         protected ActionBase(IGoveeService goveeService, CommandType command)
+            : base()
         {
             this.Command = command;
             this.GoveeService = goveeService;

@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head lang="en-gb">
+    <meta charset="utf-8">
+    <title>Brightness Action Settings</title>
+    <script src="sdpi.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <sdpi-select id="deviceId" label="Device" datasource="GetDevicesAsync" refresh="ReloadDevicesAsync"></sdpi-select>
+        <sdpi-range id="temperature" label="Temperature" default="0" min="0" max="100" step="1" mintext="Warm" maxtext="Cool"></sdpi-range>
+    </div>
+</body>
+
+</html>

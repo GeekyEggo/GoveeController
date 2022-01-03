@@ -11,7 +11,7 @@
     /// Provides an action that is capable of setting the brightness of a device.
     /// </summary>
     [StreamDeckAction("com.geekyeggo.goveecontroller.brightness")]
-    public class BrightnessAction : ActionBase<BrightnessSettings>
+    public class BrightnessAction : ActionBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BrightnessAction"/> class.
@@ -29,6 +29,7 @@
             var device = await this.GoveeService.GetDeviceInfoAsync(settings.DeviceId);
 
             await this.GoveeService.Client.SetBrightnessAsync(device.Device, device.Model, settings.Brightness);
+            await this.ShowOkAsync();
         }
     }
 }

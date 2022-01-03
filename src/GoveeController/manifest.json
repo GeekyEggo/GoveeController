@@ -8,7 +8,7 @@
       "Name": "On / Off",
       "UUID": "com.geekyeggo.goveecontroller.turnonoff",
       "Icon": "Images/TurnOnOff/Action",
-      "Tooltip": "Turn a device on or off",
+      "Tooltip": "Turns a device on or off",
       "PropertyInspectorPath": "pi/turnonoff.html",
       "States": [
         {
@@ -28,6 +28,20 @@
         {
           "FontSize": "12",
           "Image": "Images/Brightness/Key",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Color Temperature",
+      "UUID": "com.geekyeggo.goveecontroller.colortemperature",
+      "Icon": "Images/ColorTemperature/Action",
+      "Tooltip": "Sets the color temperature of a device",
+      "PropertyInspectorPath": "pi/colortemperature.html",
+      "States": [
+        {
+          "FontSize": "12",
+          "Image": "Images/ColorTemperature/Key",
           "TitleAlignment": "bottom"
         }
       ]
