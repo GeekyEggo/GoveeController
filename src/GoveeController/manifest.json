@@ -19,7 +19,7 @@
       ]
     },
     {
-      "Name": "Set Brightness",
+      "Name": "Brightness",
       "UUID": "com.geekyeggo.goveecontroller.brightness",
       "Icon": "Images/Brightness/Action",
       "Tooltip": "Sets the brightness of a device",
@@ -28,6 +28,20 @@
         {
           "FontSize": "12",
           "Image": "Images/Brightness/Key",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Color",
+      "UUID": "com.geekyeggo.goveecontroller.color",
+      "Icon": "Images/Color/Action",
+      "Tooltip": "Sets the color of a device",
+      "PropertyInspectorPath": "pi/color.html",
+      "States": [
+        {
+          "FontSize": "12",
+          "Image": "Images/Color/Key",
           "TitleAlignment": "bottom"
         }
       ]
