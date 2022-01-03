@@ -34,11 +34,31 @@
         protected IGoveeService GoveeService { get; }
 
         /// <summary>
+        /// Connects to the Govee API asynchronously.
+        /// </summary>
+        /// <param name="apiKey">The API key.</param>
+        [PropertyInspectorMethod]
+        public async Task<GoveeSetupPayload> ConnectAsync(string apiKey)
+        {
+            try
+            {
+                this.GoveeService.Client.SetApiKey(apiKey);
+                var response = await this.GoveeService.GetDevicesAsync(useCache: false);
+
+                return new GoveeSetupPayload(response.IsSuccess, response.Message);
+            }
+            catch
+            {
+                return new GoveeSetupPayload(false, "Failed to connect, please try again.");
+            }
+        }
+
+        /// <summary>
         /// Gets the devices asynchronously.
         /// </summary>
         /// <returns>The devices mapped to options.</returns>
         [PropertyInspectorMethod]
-        public Task<OptionsPayload> GetDevicesAsync()
+        public Task<Option[]> GetDevicesAsync()
             => this.GetDevicesAsync(useCache: true);
 
         /// <summary>
@@ -46,7 +66,7 @@
         /// </summary>
         /// <returns>The devices mapped to options.</returns>
         [PropertyInspectorMethod]
-        public Task<OptionsPayload> ReloadDevicesAsync()
+        public Task<Option[]> ReloadDevicesAsync()
             => this.GetDevicesAsync(useCache: false);
 
         /// <summary>
@@ -54,7 +74,7 @@
         /// </summary>
         /// <param name="useCache">Determines whether the cache of devices can be used.</param>
         /// <returns>The devices mapped to options.</returns>
-        private async Task<OptionsPayload> GetDevicesAsync(bool useCache)
+        private async Task<Option[]> GetDevicesAsync(bool useCache)
         {
             var result = await this.GoveeService.GetDevicesAsync(useCache);
             if (result.IsSuccess)
@@ -65,12 +85,17 @@
                     .Where(d => d.IsControllable && d.SupportedCommands.Contains(this.Command))
                     .OrderBy(d => d.DeviceName);
 
-                return new OptionsPayload(supportedDevices.Select(d => new Option(d.DeviceName, d.Device)));
+                return supportedDevices.Select(d => new Option(d.DeviceName, d.Device)).ToArray();
             }
             else
             {
-                return new OptionsPayload(new Option[] { new Option("Failed to load devices", string.Empty) });
+                return new [] { new Option(result.Message ?? "Failed to load devices", string.Empty) };
             }
         }
     }
+
+    /// <summary>
+    /// Provides a payload that details the result of setting up Govee.
+    /// </summary>
+    public record GoveeSetupPayload(bool IsSuccess = false, string? Message = null);
 }

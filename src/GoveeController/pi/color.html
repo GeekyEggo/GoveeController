@@ -3,15 +3,17 @@
 
 <head lang="en-gb">
     <meta charset="utf-8">
-    <title>Brightness Action Settings</title>
+    <title>Settings</title>
     <script src="sdpi.js"></script>
+    <script src="js/govee-setup.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <sdpi-select id="deviceId" label="Device" datasource="GetDevicesAsync" refresh="ReloadDevicesAsync"></sdpi-select>
-        <sdpi-color id="color" label="Color"></sdpi-color>
+    <div id="settings" class="container hidden">
+        <sdpi-select id="deviceId" property="deviceId" label="Device" datasource="GetDevicesAsync" refresh="ReloadDevicesAsync"></sdpi-select>
+        <sdpi-color property="color" label="Color"></sdpi-color>
     </div>
+    <govee-setup></govee-setup>
 </body>
 
 </html>

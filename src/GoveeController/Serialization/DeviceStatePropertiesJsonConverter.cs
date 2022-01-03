@@ -27,7 +27,9 @@
                     switch (property.Name)
                     {
                         case "online":
-                            result.IsOnline = property.Value.Deserialize<bool>(options);
+                            result.IsOnline = property.Value.ValueKind == JsonValueKind.String
+                                ? property.Value.GetString()?.Equals("true", StringComparison.OrdinalIgnoreCase) == true
+                                : property.Value.Deserialize<bool>(options);
                             break;
 
                         case "powerState":

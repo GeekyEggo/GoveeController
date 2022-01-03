@@ -10,7 +10,7 @@
         /// <summary>
         /// Gets or sets the message.
         /// </summary>
-        public string Message { get; set; } = string.Empty;
+        public string? Message { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance represents a success.
