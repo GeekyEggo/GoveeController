@@ -16,7 +16,7 @@ Govee Controller is a plugin for the Elgato Stream Deck that allows for the cont
 - Color
 - Color Brightness
 
-## ⚙️ Setup
+## 🔧 Setup
 
 1. Open the Govee app.
 1. Go to the user tab, "About Us".
