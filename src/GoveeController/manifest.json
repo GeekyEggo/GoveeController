@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/GeekyEggo/SharpDeck/master/src/SharpDeck.PropertyInspector/manifest-schema.json",
   "Name": "Govee Controller",
   "Version": "1.0.0",
-  "Author": "Richard Herman",
+  "Author": "GeekyEggo",
   "Actions": [
     {
       "Name": "On / Off",
