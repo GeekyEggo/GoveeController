@@ -64,7 +64,7 @@
   "Category": "Govee Controller",
   "CategoryIcon": "Images/GoveeController/Category",
   "CodePath": "GoveeController.exe",
-  "Description": "A counter plugin example",
+  "Description": "Take control of your Govee lights with the push of a button!",
   "Icon": "Images/GoveeController/Icon",
   "SDKVersion": 2,
   "Software": {
