@@ -31,7 +31,7 @@
 
             if (TryGetColorTemperature(device, settings.Temperature, out var temperature))
             {
-                await this.GoveeService.Client.SetColorTemperatureAsync(device.Device, device.Model, temperature);
+                await this.GoveeService.SetColorTemperatureAsync(device.Device, device.Model, temperature);
                 await this.ShowOkAsync();
             }
             else

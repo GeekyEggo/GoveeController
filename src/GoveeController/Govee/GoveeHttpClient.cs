@@ -14,6 +14,11 @@
     public class GoveeHttpClient : IGoveeClient
     {
         /// <summary>
+        /// The Govee API key header name.
+        /// </summary>
+        public const string GOVEE_API_KEY_HEADER_NAME = "Govee-API-Key";
+
+        /// <summary>
         /// The application/json header media type.
         /// </summary>
         private static readonly MediaTypeHeaderValue APPLICATION_JSON_MEDIA_TYPE = new MediaTypeHeaderValue("application/json");
@@ -38,7 +43,6 @@
         /// <inheritdoc/>
         public void SetApiKey(string key)
         {
-            const string GOVEE_API_KEY_HEADER_NAME = "Govee-API-Key";
             if (!this.HttpClient.DefaultRequestHeaders.TryGetValues(GOVEE_API_KEY_HEADER_NAME, out var values)
                 || values.FirstOrDefault() != key)
             {
@@ -48,7 +52,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, string.Empty);
             return await this.SendAsync<Response<DeviceCollection>>(request, cancellationToken);

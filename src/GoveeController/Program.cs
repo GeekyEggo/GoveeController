@@ -2,7 +2,6 @@
 {
     using GoveeController.Govee;
     using GoveeController.Services;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using SharpDeck.Extensions.Hosting;
@@ -22,26 +21,16 @@
             System.Diagnostics.Debugger.Launch();
 #endif
 
-            var appSettingsConfig = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false)
-                .Build();
-
             new HostBuilder()
                 .ConfigureServices(services =>
                 {
                     services
-                        .AddSingleton<IGoveeClient>(provider =>
-                        {
-                            var client = new GoveeHttpClient();
-                            client.SetApiKey(appSettingsConfig.GetValue<string>("ApiKey"));
-
-                            return client;
-                        })
-                        .AddSingleton<IGoveeService, GoveeService>();
+                        .AddSingleton<IGoveeService, GoveeService>()
+                        .AddHostedService<GoveeConnectorBackgroundService>();
                 })
                 .UseStreamDeck()
-                .Start();
+                .Build()
+                .Run();
         }
     }
 }

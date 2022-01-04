@@ -32,7 +32,7 @@
             var turnOn = settings.Operation == TurnOnOffOperation.TurnOn;
             if (settings.Operation == TurnOnOffOperation.Toggle)
             {
-                var state = await this.GoveeService.Client.GetDeviceStateAsync(device.Device, device.Model);
+                var state = await this.GoveeService.GetDeviceStateAsync(device.Device, device.Model);
                 if (!state.IsSuccess)
                 {
                     await this.ShowAlertAsync();
@@ -43,7 +43,7 @@
             }
 
             // Change the state of the device.
-            await this.GoveeService.Client.TurnOnOffAsync(device.Device, device.Model, turnOn);
+            await this.GoveeService.TurnOnOffAsync(device.Device, device.Model, turnOn);
             await this.ShowOkAsync();
         }
     }

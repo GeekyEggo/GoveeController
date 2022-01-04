@@ -1,4 +1,17 @@
-﻿class GoveeSetup extends HTMLElement {
+﻿const showSettings = function (canShow) {
+    const setup = document.getElementsByTagName('govee-setup');
+    const settings = document.getElementById('settings');
+
+    if (canShow) {
+        setup[0].classList.add('hidden');
+        settings.classList.remove('hidden');
+    } else {
+        setup[0].classList.remove('hidden');
+        settings.classList.add('hidden');
+    }
+}
+
+class GoveeSetup extends HTMLElement {
     /**
      * Sets the disabled state of the child elements.
      * @param {any} value The disabled state.
@@ -51,9 +64,7 @@
         const response = await window.streamDeckClient.get('ConnectAsync', { 'apiKey': this.input.value });
 
         if (response.payload.data.isSuccess) {
-            this.classList.add('hidden');
-
-            document.getElementById('settings').classList.remove('hidden');
+            showSettings(true);
             document.getElementById('deviceId').refresh();
         } else {
             this.errorText = `Setup failed: ${response.payload.data.message || 'Connecting failed, please try again'}`;
@@ -63,3 +74,8 @@
 }
 
 customElements.define('govee-setup', GoveeSetup);
+
+(async function () {
+    const settings = await window.streamDeckClient.getGlobalSettings();
+    showSettings(settings.payload.settings.isConnected);
+})();

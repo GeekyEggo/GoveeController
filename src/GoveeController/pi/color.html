@@ -4,7 +4,7 @@
 <head lang="en-gb">
     <meta charset="utf-8">
     <title>Settings</title>
-    <script src="sdpi.js"></script>
+    <script src="js/sdpi.js"></script>
     <script src="js/govee-setup.js"></script>
 </head>
 
@@ -13,7 +13,7 @@
         <sdpi-select id="deviceId" property="deviceId" label="Device" datasource="GetDevicesAsync" refresh="ReloadDevicesAsync"></sdpi-select>
         <sdpi-color property="color" label="Color"></sdpi-color>
     </div>
-    <govee-setup></govee-setup>
+    <govee-setup class="hidden"></govee-setup>
 </body>
 
 </html>

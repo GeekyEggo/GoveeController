@@ -8,12 +8,6 @@
     public interface IGoveeClient
     {
         /// <summary>
-        /// Sets the API key.
-        /// </summary>
-        /// <param name="key">The API key.</param>
-        void SetApiKey(string key);
-
-        /// <summary>
         /// Gets the devices asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token.</param>

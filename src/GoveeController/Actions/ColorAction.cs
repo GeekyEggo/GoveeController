@@ -32,7 +32,7 @@
 
             if (TryParseColor(settings.Color, out var color))
             {
-                await this.GoveeService.Client.SetColorAsync(device.Device, device.Model, color.R, color.G, color.B);
+                await this.GoveeService.SetColorAsync(device.Device, device.Model, color.R, color.G, color.B);
                 await this.ShowOkAsync();
             }
             else

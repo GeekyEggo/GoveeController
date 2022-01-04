@@ -7,21 +7,8 @@
     /// <summary>
     /// Provides a service for controlling Govee devices, via a <see cref="IGoveeClient"/>.
     /// </summary>
-    public interface IGoveeService
+    public interface IGoveeService : IGoveeClient
     {
-        /// <summary>
-        /// Gets the client used to communicate with Govee.
-        /// </summary>
-        public IGoveeClient Client { get; }
-
-        /// <summary>
-        /// Gets the devices asynchronously.
-        /// </summary>
-        /// <param name="useCache">Determines whether the local cache can be used when selecting devices.</param>
-        /// <param name="cancellationToken">The optional cancellation token.</param>
-        /// <returns>The devices.</returns>
-        Task<Response<DeviceCollection>> GetDevicesAsync(bool useCache = true, CancellationToken cancellationToken = default);
-
         /// <summary>
         /// Gets the device information asynchronously.
         /// </summary>
@@ -29,5 +16,25 @@
         /// <param name="cancellationToken">The optional cancellation token.</param>
         /// <returns>The device information.</returns>
         Task<Device> GetDeviceInfoAsync(string? deviceId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Invalidates the cache.
+        /// </summary>
+        void InvalidateCache();
+
+        /// <summary>
+        /// Attempts to connect to the Govee API using the API key stored in the global settings asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The result of connecting to the Govee API.</returns>
+        ValueTask<ConnectionResponse> TryConnectAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Attempts to connect to the Govee API using the specified <paramref name="apiKey"/> asynchronously.
+        /// </summary>
+        /// <param name="apiKey">The API key.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The result of connecting to the Govee API.</returns>
+        ValueTask<ConnectionResponse> TryConnectAsync(string? apiKey, CancellationToken cancellationToken = default);
     }
 }

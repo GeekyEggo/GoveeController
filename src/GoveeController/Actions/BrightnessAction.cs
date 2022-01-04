@@ -28,7 +28,7 @@
             var settings = args.Payload.GetSettings<BrightnessSettings>();
             var device = await this.GoveeService.GetDeviceInfoAsync(settings.DeviceId);
 
-            await this.GoveeService.Client.SetBrightnessAsync(device.Device, device.Model, settings.Brightness);
+            await this.GoveeService.SetBrightnessAsync(device.Device, device.Model, settings.Brightness);
             await this.ShowOkAsync();
         }
     }

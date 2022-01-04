@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "publish": "npm run clean && npm run build && npm run package",
+    "build": "dotnet clean && dotnet publish -r win-x64 -c Release --self-contained true -o dist/com.geekyeggo.goveecontroller.sdPlugin",
+    "package": "./dist/DistributionTool.exe -b -i ./dist/com.geekyeggo.goveecontroller.sdPlugin -o ./dist/",
+    "clean": "rm -rf dist/com.geekyeggo.goveecontroller.sdPlugin && rm -rf dist/com.geekyeggo.goveecontroller.streamDeckPlugin",
+    "watch": "nodemon -w ./src/GoveeController/pi --exec \"cp -R src\\GoveeController\\pi $APPDATA\\Elgato\\StreamDeck\\plugins\\com.geekyeggo.goveecontroller.sdPlugin\""
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

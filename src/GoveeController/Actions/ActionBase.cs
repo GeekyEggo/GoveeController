@@ -42,9 +42,7 @@
         {
             try
             {
-                this.GoveeService.Client.SetApiKey(apiKey);
-                var response = await this.GoveeService.GetDevicesAsync(useCache: false);
-
+                var response = await this.GoveeService.TryConnectAsync(apiKey);
                 return new GoveeSetupPayload(response.IsSuccess, response.Message);
             }
             catch
@@ -76,7 +74,12 @@
         /// <returns>The devices mapped to options.</returns>
         private async Task<Option[]> GetDevicesAsync(bool useCache)
         {
-            var result = await this.GoveeService.GetDevicesAsync(useCache);
+            if (!useCache)
+            {
+                this.GoveeService.InvalidateCache();
+            }
+
+            var result = await this.GoveeService.GetDevicesAsync();
             if (result.IsSuccess)
             {
                 var supportedDevices = result
