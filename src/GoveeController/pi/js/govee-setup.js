@@ -27,6 +27,7 @@ class GoveeSetup extends HTMLElement {
      */
     set errorText(value) {
         this.response.setAttribute('text', value);
+        this.response.classList.remove('hidden');
     }
 
     /**
@@ -49,7 +50,24 @@ class GoveeSetup extends HTMLElement {
 
         // Result of connecting when failure.
         this.response = document.createElement('sdpi-content');
+        this.response.classList.add('hidden');
         container.appendChild(this.response);
+
+        // Helper text.
+        const helper = document.createElement('div');
+        helper.classList.add('row');
+        helper.innerHTML = `
+            <div class="col-content">
+                <strong>How to:</strong>
+                <ol>
+                    <li>Open the Govee app.</li>
+                    <li>Go to the user tab > "About Us".</li>
+                    <li>Select "Apply for API Key".</li>
+                </ol>
+            </div>
+        `;
+
+        container.appendChild(helper);
 
         this.appendChild(container);
     }
@@ -59,7 +77,7 @@ class GoveeSetup extends HTMLElement {
      */
     async connect() {
         this.disabled = true;
-        this.errorText = '';
+        this.errorText = 'Connecting...';
 
         const response = await window.streamDeckClient.get('ConnectAsync', { 'apiKey': this.input.value });
 
