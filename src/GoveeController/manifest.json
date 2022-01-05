@@ -3,6 +3,7 @@
   "Name": "Govee Controller",
   "Version": "1.0.0",
   "Author": "GeekyEggo",
+  "URL": "https://github.com/GeekyEggo/GoveeController",
   "Actions": [
     {
       "Name": "On / Off",
