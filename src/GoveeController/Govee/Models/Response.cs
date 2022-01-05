@@ -20,6 +20,6 @@
         /// <summary>
         /// Gets or sets the status of the response.
         /// </summary>
-        public HttpStatusCode Status { get; set; } = HttpStatusCode.OK;
+        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
     }
 }

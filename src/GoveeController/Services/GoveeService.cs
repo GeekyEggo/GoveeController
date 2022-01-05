@@ -1,5 +1,7 @@
 ﻿namespace GoveeController.Services
 {
+    using System.Net;
+    using System.Net.Http;
     using GoveeController.Govee;
     using GoveeController.Govee.Models;
     using SharpDeck.Connectivity;
@@ -118,16 +120,33 @@
                 }
 
                 var response = await this.GetDevicesAsync(cancellationToken);
-                var settings = response.IsSuccess ? new Settings(true, apiKey) : new Settings(false);
+                if (response.IsSuccess)
+                {
+                    await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(true, apiKey), cancellationToken);
+                }
 
-                await this.StreamDeckConnection.SetGlobalSettingsAsync(settings, cancellationToken);
                 return new ConnectionResponse(response.IsSuccess, response.Message);
             }
             else
             {
                 await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
-                return new ConnectionResponse(false, "No API specified.");
+                return new ConnectionResponse(false, "API key is missing");
             }
+        }
+
+        /// <inheritdoc/>
+        protected override async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        {
+            var response = await base.SendAsync<TResponse>(request, cancellationToken);
+
+            // When the request failed due to an API key problem, set the global settings to represent the failure.
+            if (response.StatusCode == HttpStatusCode.Unauthorized
+                || response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
+            }
+
+            return response;
         }
     }
 

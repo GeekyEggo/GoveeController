@@ -40,6 +40,11 @@
             BaseAddress = new Uri("https://developer-api.govee.com/v1/devices/")
         };
 
+        /// <summary>
+        /// Gets a value indicating whether this instance has API key set.
+        /// </summary>
+        private bool HasApiKey => this.HttpClient.DefaultRequestHeaders.TryGetValues(GOVEE_API_KEY_HEADER_NAME, out var values) && values.Any(value => !string.IsNullOrWhiteSpace(value));
+
         /// <inheritdoc/>
         public void SetApiKey(string key)
         {
@@ -96,6 +101,50 @@
         }
 
         /// <summary>
+        /// Sends the request asynchronously.
+        /// </summary>
+        /// <typeparam name="TResponse">The type of the response.</typeparam>
+        /// <param name="request">The request to send.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The response; defaults to <see cref="HttpStatusCode.BadRequest"/> upon failure.</returns>
+        protected virtual async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+            where TResponse : Response, new()
+        {
+            // Only make a request when we have an API key set.
+            if (!this.HasApiKey)
+            {
+                return new TResponse
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Message = "API key is missing"
+                };
+            }
+
+            using var response = await this.HttpClient.SendAsync(request, cancellationToken);
+
+            try
+            {
+                // Attempt to parse the response as JSON.
+                var result = await response.Content.ReadFromJsonAsync<TResponse>(_serializerOptions, cancellationToken);
+                if (result == null)
+                {
+                    throw new InvalidOperationException("Failed to pase response.");
+                }
+
+                result.StatusCode = response.StatusCode;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new TResponse
+                {
+                    StatusCode = response.StatusCode,
+                    Message = ex.Message
+                };
+            };
+        }
+
+        /// <summary>
         /// Controls the device asynchronously.
         /// </summary>
         /// <typeparam name="TCommandValue">The type of the command value.</typeparam>
@@ -109,39 +158,6 @@
 
             request.Content = content;
             return await this.SendAsync<Response>(request, cancellationToken);
-        }
-
-        /// <summary>
-        /// Sends the request asynchronously.
-        /// </summary>
-        /// <typeparam name="TResponse">The type of the response.</typeparam>
-        /// <param name="request">The request to send.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The response; defaults to <see cref="HttpStatusCode.BadRequest"/> upon failure.</returns>
-        private async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
-            where TResponse : Response, new()
-        {
-            using var response = await this.HttpClient.SendAsync(request, cancellationToken);
-
-            try
-            {
-                var result = await response.Content.ReadFromJsonAsync<TResponse>(_serializerOptions, cancellationToken);
-                return result ?? CreateDefaultResponse();
-            }
-            catch
-            {
-                response.EnsureSuccessStatusCode();
-                return CreateDefaultResponse();
-            }
-
-            static TResponse CreateDefaultResponse()
-            {
-                return new TResponse()
-                {
-                    Status = HttpStatusCode.BadRequest,
-                    Message = "Unknown error"
-                };
-            }
         }
     }
 }
