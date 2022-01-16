@@ -1,7 +1,6 @@
-<!--[![download-count]](https://github.com/GeekyEggo/GoveeController)-->
-[![version-icon]](https://github.com/GeekyEggo/GoveeController)
-[![beta-version-icon]](https://github.com/GeekyEggo/GoveeController/raw/main/dist/com.geekyeggo.goveecontroller.streamDeckPlugin)
+[![download-count]](https://apps.elgato.com/plugins/com.geekyeggo.goveecontroller)
 [![Twitter icon](https://img.shields.io/badge/GeekyEggo--brightgreen?style=social&logo=twitter)](https://www.twitter.com/geekyeggo)
+<!--[![beta-version-icon]](https://github.com/GeekyEggo/GoveeController/raw/main/dist/com.geekyeggo.goveecontroller.streamDeckPlugin)-->
 
 <img src="./assets/icon-round.svg" alt="Govee Controller" />
 
