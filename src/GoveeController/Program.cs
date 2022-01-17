@@ -1,6 +1,5 @@
 ﻿namespace GoveeController
 {
-    using GoveeController.Govee;
     using GoveeController.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -21,14 +20,13 @@
             System.Diagnostics.Debugger.Launch();
 #endif
 
-            new HostBuilder()
+            StreamDeckPluginHost.CreateDefaultBuilder()
                 .ConfigureServices(services =>
                 {
                     services
                         .AddSingleton<IGoveeService, GoveeService>()
                         .AddHostedService<GoveeConnectorBackgroundService>();
                 })
-                .UseStreamDeck()
                 .Build()
                 .Run();
         }

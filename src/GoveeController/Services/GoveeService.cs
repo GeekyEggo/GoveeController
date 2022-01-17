@@ -4,6 +4,7 @@
     using System.Net.Http;
     using GoveeController.Govee;
     using GoveeController.Govee.Models;
+    using Microsoft.Extensions.Logging;
     using SharpDeck.Connectivity;
 
     /// <summary>
@@ -20,8 +21,12 @@
         /// Initializes a new instance of the <see cref="GoveeService"/> class.
         /// </summary>
         /// <param name="streamDeckConnection">The Stream Deck connection.</param>
-        public GoveeService(IStreamDeckConnection streamDeckConnection)
-            : base() => this.StreamDeckConnection = streamDeckConnection;
+        public GoveeService(IStreamDeckConnection streamDeckConnection, ILoggerFactory loggerFactory)
+            : base(loggerFactory.CreateLogger<GoveeHttpClient>())
+        {
+            this.StreamDeckConnection = streamDeckConnection;
+            this.Logger = loggerFactory.CreateLogger<GoveeService>();
+        }
 
         /// <summary>
         /// Gets the Stream Deck connection.
@@ -33,6 +38,11 @@
         /// </summary>
         private Response<DeviceCollection>? DeviceCollectionCache { get; set; }
 
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        private ILogger Logger { get; }
+
         /// <inheritdoc />
         public override async Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default)
         {
@@ -41,12 +51,16 @@
                 await this._syncRoot.WaitAsync(cancellationToken);
                 if (this.DeviceCollectionCache != null)
                 {
+                    this.Logger.LogDebug("Reading devices from cache.");
                     return this.DeviceCollectionCache;
                 }
 
+                this.Logger.LogDebug("Getting devices from API.");
                 var response = await base.GetDevicesAsync(cancellationToken);
+
                 if (response.IsSuccess)
                 {
+                    this.Logger.LogDebug("Updated device list cache.");
                     this.DeviceCollectionCache = response;
                 }
 

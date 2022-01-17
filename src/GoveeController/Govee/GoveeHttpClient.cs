@@ -7,6 +7,7 @@
     using GoveeController.Extensions;
     using GoveeController.Govee.Models;
     using GoveeController.Serialization;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Provides methods for interacting with Govee devices.
@@ -33,6 +34,13 @@
         };
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="GoveeHttpClient"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public GoveeHttpClient(ILogger<GoveeHttpClient> logger)
+            => this.Logger = logger;
+
+        /// <summary>
         /// Gets the HTTP client.
         /// </summary>
         private HttpClient HttpClient { get; } = new HttpClient
@@ -44,6 +52,11 @@
         /// Gets a value indicating whether this instance has API key set.
         /// </summary>
         private bool HasApiKey => this.HttpClient.DefaultRequestHeaders.TryGetValues(GOVEE_API_KEY_HEADER_NAME, out var values) && values.Any(value => !string.IsNullOrWhiteSpace(value));
+
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        private ILogger Logger { get; }
 
         /// <inheritdoc/>
         public void SetApiKey(string key)
@@ -124,8 +137,12 @@
 
             try
             {
-                // Attempt to parse the response as JSON.
-                var result = await response.Content.ReadFromJsonAsync<TResponse>(_serializerOptions, cancellationToken);
+                // Read the contents of the response, and log them for debugging.
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                this.Logger.LogDebug($"Request: {request.RequestUri}, Response: {content}.");
+
+                // Parse the content as JSON, and return.
+                var result = JsonSerializer.Deserialize<TResponse>(content, _serializerOptions);
                 if (result == null)
                 {
                     throw new InvalidOperationException("Failed to pase response.");
@@ -136,12 +153,13 @@
             }
             catch (Exception ex)
             {
+                this.Logger.LogError(ex, $"Request: {request.RequestUri} failed.");
                 return new TResponse
                 {
                     StatusCode = response.StatusCode,
                     Message = ex.Message
                 };
-            };
+            }
         }
 
         /// <summary>
