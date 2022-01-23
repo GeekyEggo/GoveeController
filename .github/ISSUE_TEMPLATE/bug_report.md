@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help improve the Govee Controller plugin
 title: ''
-labels: bug
+labels: "\U0001F41E bug"
 assignees: GeekyEggo
 
 ---
