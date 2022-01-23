@@ -131,7 +131,7 @@
             {
                 // Read the contents of the response, and log them for debugging.
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                this.Logger.LogDebug("Request: {requestUri}, Response: {content}.", request.RequestUri, content);
+                this.Logger.LogDebug("Request: {requestUri}, Response: {code} {content}.", request.RequestUri, response.StatusCode, content);
 
                 // Parse the content as JSON, and return.
                 var result = JsonSerializer.Deserialize(content, jsonTypeInfo);
@@ -145,7 +145,7 @@
             }
             catch (Exception ex)
             {
-                this.Logger.LogError("Request: {requestUri}", request.RequestUri);
+                this.Logger.LogError("Request: {requestUri}, Response: {code}.", request.RequestUri, response.StatusCode);
                 return new TResponse
                 {
                     StatusCode = response.StatusCode,
