@@ -2,6 +2,7 @@
 {
     using System.Net;
     using System.Net.Http;
+    using System.Text.Json.Serialization.Metadata;
     using GoveeController.Govee;
     using GoveeController.Govee.Models;
     using Microsoft.Extensions.Logging;
@@ -149,9 +150,9 @@
         }
 
         /// <inheritdoc/>
-        protected override async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        protected override async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, JsonTypeInfo<TResponse> jsonTypeInfo, CancellationToken cancellationToken = default)
         {
-            var response = await base.SendAsync<TResponse>(request, cancellationToken);
+            var response = await base.SendAsync(request, jsonTypeInfo, cancellationToken);
 
             // When the request failed due to an API key problem, set the global settings to represent the failure.
             if (response.StatusCode == HttpStatusCode.Unauthorized

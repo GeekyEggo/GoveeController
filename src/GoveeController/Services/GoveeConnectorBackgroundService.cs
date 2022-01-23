@@ -41,7 +41,7 @@
             }
             else
             {
-                this.Logger.LogInformation($"Unable to connect to Govee: \"{connection.Message}\".");
+                this.Logger.LogError("Unable to connect to Govee: \"{ResponseMessage}\".", connection.Message);
             }
         }
     }

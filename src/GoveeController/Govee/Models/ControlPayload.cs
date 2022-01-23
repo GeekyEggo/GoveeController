@@ -26,6 +26,6 @@
         /// Gets or sets the command.
         /// </summary>
         [JsonPropertyName("cmd")]
-        public Command<TCommandValue> Command { get; init; }
+        public Command<TCommandValue> Command { get; set; }
     }
 }

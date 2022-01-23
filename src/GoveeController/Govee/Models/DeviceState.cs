@@ -1,7 +1,7 @@
 ﻿namespace GoveeController.Govee.Models
 {
     using System.Text.Json.Serialization;
-    using GoveeController.Serialization;
+    using GoveeController.Govee.Serialization;
 
     /// <summary>
     /// Provides information about the state of a device.

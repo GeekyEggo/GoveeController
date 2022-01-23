@@ -1,12 +1,12 @@
 ﻿namespace GoveeController.Govee
 {
     using System.Net;
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
+    using System.Text;
     using System.Text.Json;
+    using System.Text.Json.Serialization.Metadata;
     using GoveeController.Extensions;
     using GoveeController.Govee.Models;
-    using GoveeController.Serialization;
+    using GoveeController.Govee.Serialization;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -15,23 +15,14 @@
     public class GoveeHttpClient : IGoveeClient
     {
         /// <summary>
+        /// The application/json header media type.
+        /// </summary>
+        private const string APPLICATION_JSON_MEDIA_TYPE = "application/json";
+
+        /// <summary>
         /// The Govee API key header name.
         /// </summary>
         public const string GOVEE_API_KEY_HEADER_NAME = "Govee-API-Key";
-
-        /// <summary>
-        /// The application/json header media type.
-        /// </summary>
-        private static readonly MediaTypeHeaderValue APPLICATION_JSON_MEDIA_TYPE = new MediaTypeHeaderValue("application/json");
-
-        /// <summary>
-        /// The serializer options.
-        /// </summary>
-        private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = false
-        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GoveeHttpClient"/> class.
@@ -73,21 +64,21 @@
         public virtual async Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, string.Empty);
-            return await this.SendAsync<Response<DeviceCollection>>(request, cancellationToken);
+            return await this.SendAsync(request, GoveeJsonContext.Default.ResponseDeviceCollection, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async Task<Response<DeviceState>> GetDeviceStateAsync(string device, string model, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, $"state?device={Uri.EscapeDataString(device)}&model={Uri.EscapeDataString(model)}");
-            return await this.SendAsync<Response<DeviceState>>(request, cancellationToken);
+            return await this.SendAsync(request, GoveeJsonContext.Default.ResponseDeviceState, cancellationToken);
         }
 
         /// <inheritdoc/>
         public Task<Response> SetBrightnessAsync(string device, string model, int brightness, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<int>(device, model, CommandNames.Brightness, brightness.InRangeOf(0, 100));
-            return this.ControlAsync(payload, cancellationToken);
+            return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadInt32, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -96,21 +87,21 @@
             var rgbValue = new RgbValue(red.InColorRange(), green.InColorRange(), blue.InColorRange());
             var payload = new ControlPayload<RgbValue>(device, model, CommandNames.Color, rgbValue);
 
-            return this.ControlAsync(payload, cancellationToken);
+            return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadRgbValue, cancellationToken);
         }
 
         /// <inheritdoc/>
         public Task<Response> SetColorTemperatureAsync(string device, string model, int temperature, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<int>(device, model, CommandNames.ColorTemperature, temperature);
-            return this.ControlAsync(payload, cancellationToken);
+            return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadInt32, cancellationToken);
         }
 
         /// <inheritdoc/>
         public Task<Response> TurnOnOffAsync(string device, string model, bool turnOn, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<string>(device, model, CommandNames.Turn, turnOn ? OnOffBooleanJsonConverter.TRUE : OnOffBooleanJsonConverter.FALSE);
-            return this.ControlAsync(payload, cancellationToken);
+            return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadString, cancellationToken);
         }
 
         /// <summary>
@@ -118,9 +109,10 @@
         /// </summary>
         /// <typeparam name="TResponse">The type of the response.</typeparam>
         /// <param name="request">The request to send.</param>
+        /// <param name="jsonTypeInfo">The JSON type information.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The response; defaults to <see cref="HttpStatusCode.BadRequest"/> upon failure.</returns>
-        protected virtual async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        protected virtual async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, JsonTypeInfo<TResponse> jsonTypeInfo, CancellationToken cancellationToken = default)
             where TResponse : Response, new()
         {
             // Only make a request when we have an API key set.
@@ -139,10 +131,10 @@
             {
                 // Read the contents of the response, and log them for debugging.
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                this.Logger.LogDebug($"Request: {request.RequestUri}, Response: {content}.");
+                this.Logger.LogDebug("Request: {requestUri}, Response: {content}.", request.RequestUri, content);
 
                 // Parse the content as JSON, and return.
-                var result = JsonSerializer.Deserialize<TResponse>(content, _serializerOptions);
+                var result = JsonSerializer.Deserialize(content, jsonTypeInfo);
                 if (result == null)
                 {
                     throw new InvalidOperationException("Failed to pase response.");
@@ -153,7 +145,7 @@
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, $"Request: {request.RequestUri} failed.");
+                this.Logger.LogError("Request: {requestUri}", request.RequestUri);
                 return new TResponse
                 {
                     StatusCode = response.StatusCode,
@@ -167,15 +159,16 @@
         /// </summary>
         /// <typeparam name="TCommandValue">The type of the command value.</typeparam>
         /// <param name="payload">The payload to send that defines what should happen to the device.</param>
+        /// <param name="jsonTypeInfo">The JSON type information.</param>
         /// <param name="cancellationToken">The optional cancellation token.</param>
         /// <returns>The response indicating the success of executing the command.</returns>
-        private async Task<Response> ControlAsync<TCommandValue>(ControlPayload<TCommandValue> payload, CancellationToken cancellationToken = default)
+        private async Task<Response> ControlAsync<TCommandValue>(ControlPayload<TCommandValue> payload, JsonTypeInfo<ControlPayload<TCommandValue>> jsonTypeInfo, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Put, "control");
-            using var content = JsonContent.Create(payload, APPLICATION_JSON_MEDIA_TYPE, _serializerOptions);
+            using var content = new StringContent(JsonSerializer.Serialize(payload, jsonTypeInfo), Encoding.UTF8, APPLICATION_JSON_MEDIA_TYPE);
 
             request.Content = content;
-            return await this.SendAsync<Response>(request, cancellationToken);
+            return await this.SendAsync(request, GoveeJsonContext.Default.Response, cancellationToken);
         }
     }
 }

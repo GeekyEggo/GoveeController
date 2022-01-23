@@ -13,15 +13,4 @@
         [JsonPropertyName("colorTem")]
         public ColorTemperature? ColorTemperature { get; set; }
     }
-
-    /// <summary>
-    /// Provides information about a devices color temperature properties.
-    /// </summary>
-    public record ColorTemperature(Range Range);
-
-    /// <summary>
-    /// Provides information about a range.
-    /// </summary>
-    public record Range(int Min, int Max);
-
 }
