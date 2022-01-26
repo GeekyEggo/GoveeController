@@ -7,23 +7,16 @@ assignees: GeekyEggo
 
 ---
 
+## Pre-checks
+
+- [ ] The device is connected via WiFi.
+- [ ] The device is supported by the public API. ([list of supported devices](https://govee-public.s3.amazonaws.com/developer-docs/GoveeAPIReference.pdf)).
+
 ## Description
-
-_Describe the bug; a clear and concise description of what the bug is._
-
-## Reproduction Steps
-
-_Steps to reproduce the behaviour:_
-1. Go to '...'
-2. Click on '...'
-3. Scroll down to '...'
-4. See error.
-
-## Expected Behaviour
-
-_A clear and concise description of what you expected to happen._
+- Describe the bug; a clear and concise description of what the bug is.
+- Include the affected product's model number.
 
 ## Logs and Screenshots
 
-- _Please attach logs found at `%appdata%\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\logs`_
-- _If applicable, add screenshots to help explain the problem._
+- Please attach logs from `%appdata%\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\logs`.
+- If applicable, add screenshots to help explain the problem.

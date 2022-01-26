@@ -15,17 +15,23 @@ Govee Controller is a plugin for the Elgato Stream Deck that allows for the cont
 - Color
 - Color Brightness
 
-## 🔧 Setup
+## :bulb: Supported Devices
+
+Govee Controller uses the public [Govee API version 1.4](https://govee-public.s3.amazonaws.com/developer-docs/GoveeAPIReference.pdf) which requires devices to be connected via WiFi.
+
+- H5001, H5080, H5081.
+- H6002, H6003, H6008, H6049, H6050, H6050, H6051, H6052, H6054, H6056, H6058, H6059, H605B, H6061, H6062, H6071, H6072, H6073, H6075, H6076, H6083, H6085, H6086, H6087, H6089, H6104, H6109, H610A, H6110, H6117, H611A, H611B, H611C, H611Z, H6121, H6135, H6137, H6141, H6142, H6143, H6143, H6144, H6144, H6148, H614A, H614B, H614C, H614D, H614E, H6154, H6159, H615A, H615B, H615C, H615D, H6160, H6163, H6172, H6182, H6188, H618A, H618C, H618E, H6195, H6198, H6199, H619A, H619B, H619C, H619D, H619E, H619Z, H61A0.
+- H7005, H7006, H7007, H7008, H7012, H7013, H7014, H7020, H7021, H7022, H7028, H7050, H7060.
+
+_List of supported product models accurate as of 26th Jan 2022._
+
+## :wrench: Setup
 
 1. Open the Govee app.
 1. Go to the user tab, "About Us".
 1. Select "Apply for API Key".
 
 Shortly after you should receive your API Key; this can be used in the Govee Controller to allow your Stream Deck to control your lights.
-
-## :rotating_light: Frequently Asked Questions
-
-If you have any questions, problems, or suggestions please consider creating an issue, or [contact me](https://twitter.com/geekyeggo) on <img src="./assets/twitter.svg" width="18" alt="Twitter" /> Twitter.
 
 ## :page_with_curl: Licence
 
