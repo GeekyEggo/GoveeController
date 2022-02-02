@@ -1,7 +1,7 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/GeekyEggo/SharpDeck/master/src/SharpDeck.PropertyInspector/manifest-schema.json",
   "Name": "Govee Controller",
-  "Version": "1.0.3",
+  "Version": "1.1.0",
   "Author": "GeekyEggo",
   "URL": "https://github.com/GeekyEggo/GoveeController",
   "Actions": [
@@ -64,7 +64,8 @@
   ],
   "Category": "Govee Controller",
   "CategoryIcon": "Images/GoveeController/Category",
-  "CodePath": "GoveeController.exe",
+  "CodePath": "win/GoveeController.exe",
+  "CodePathMac": "osx/GoveeController",
   "Description": "Take control of your Govee lights with the push of a button!",
   "Icon": "Images/GoveeController/Icon",
   "SDKVersion": 2,
@@ -75,6 +76,10 @@
     {
       "MinimumVersion": "10",
       "Platform": "windows"
+    },
+    {
+      "MinimumVersion": "10.11",
+      "Platform": "mac"
     }
   ]
 }

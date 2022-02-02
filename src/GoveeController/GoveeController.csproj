@@ -7,11 +7,16 @@
 		<Nullable>enable</Nullable>
 		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
 		<PublishTrimmed>true</PublishTrimmed>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>$(APPDATA)\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\</OutputPath>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputPath>$(APPDATA)\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\win\</OutputPath>
+		<SharedAssetDir>$(OutputPath)..</SharedAssetDir>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<SharedAssetDir>$(PublishDir)\..</SharedAssetDir>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,23 +26,27 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\SharpDeck\src\SharpDeck.Extensions.Hosting\SharpDeck.Extensions.Hosting.csproj" />
-		<ProjectReference Include="..\..\..\SharpDeck\src\SharpDeck\SharpDeck.csproj" />
+	  <ProjectReference Include="..\..\..\SharpDeck\src\SharpDeck.Extensions.Hosting\SharpDeck.Extensions.Hosting.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Images\**\*.*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="pi\**\*.*">
-		    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="*.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+	  <None Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Exec Command="taskkill -f -t -im StreamDeck.exe -fi &quot;status eq running&quot;" />
+	</Target>
+
+	<Target Name="CopySharedAssets" BeforeTargets="PreBuildEvent">
+		<ItemGroup>
+			<Images Include="$(ProjectDir)\Images\**\*.*" />
+			<PropertyInspector Include="$(ProjectDir)\pi\**\*.*" />
+		</ItemGroup>
+
+		<Copy SourceFiles="$(ProjectDir)manifest.json" DestinationFolder="$(SharedAssetDir)\" />
+		<Copy SourceFiles="@(Images)" DestinationFolder="$(SharedAssetDir)\Images\%(RecursiveDir)" />
+		<Copy SourceFiles="@(PropertyInspector)" DestinationFolder="$(SharedAssetDir)\pi\%(RecursiveDir)" />
 	</Target>
 </Project>

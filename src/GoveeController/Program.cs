@@ -27,8 +27,7 @@
                         .AddSingleton<IGoveeService, GoveeService>()
                         .AddHostedService<GoveeConnectorBackgroundService>();
                 })
-                .Build()
-                .Run();
+                .RunStreamDeckPlugin();
         }
     }
 }
