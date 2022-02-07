@@ -114,39 +114,43 @@
         public async ValueTask<ConnectionResponse> TryConnectAsync(CancellationToken cancellationToken = default)
         {
             var globalSettings = await this.StreamDeckConnection.GetGlobalSettingsAsync<Settings>(cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(globalSettings.ApiKey))
+            {
+                await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
+                return new ConnectionResponse(false, "API key is not defined in global settings");
+            }
+
             return await this.TryConnectAsync(globalSettings.ApiKey, cancellationToken);
         }
 
         /// <inheritdoc/>
         public async ValueTask<ConnectionResponse> TryConnectAsync(string? apiKey, CancellationToken cancellationToken = default)
         {
-            if (!string.IsNullOrWhiteSpace(apiKey))
+            if (string.IsNullOrWhiteSpace(apiKey))
             {
-                try
-                {
-                    await this._syncRoot.WaitAsync(cancellationToken);
-
-                    this.SetApiKey(apiKey);
-                    this.DeviceCollectionCache = null;
-                }
-                finally
-                {
-                    this._syncRoot.Release();
-                }
-
-                var response = await this.GetDevicesAsync(cancellationToken);
-                if (response.IsSuccess)
-                {
-                    await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(true, apiKey), cancellationToken);
-                }
-
-                return new ConnectionResponse(response.IsSuccess, response.Message);
+                return new ConnectionResponse(false, "API key is null or undefined");
             }
-            else
+
+            try
             {
-                await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
-                return new ConnectionResponse(false, "API key is missing");
+                await this._syncRoot.WaitAsync(cancellationToken);
+
+                this.SetApiKey(apiKey);
+                this.DeviceCollectionCache = null;
             }
+            finally
+            {
+                this._syncRoot.Release();
+            }
+
+            var response = await this.GetDevicesAsync(cancellationToken);
+            if (response.IsSuccess)
+            {
+                await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(true, apiKey), cancellationToken);
+            }
+
+            return new ConnectionResponse(response.IsSuccess, response.Message);
         }
 
         /// <inheritdoc/>
@@ -158,6 +162,7 @@
             if (response.StatusCode == HttpStatusCode.Unauthorized
                 || response.StatusCode == HttpStatusCode.Forbidden)
             {
+                this.Logger.LogInformation($"Request contains bad API key, reseting global settings.");
                 await this.StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
             }
 

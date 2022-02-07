@@ -120,8 +120,8 @@
             {
                 return new TResponse
                 {
-                    StatusCode = HttpStatusCode.Unauthorized,
-                    Message = "API key is missing"
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = "Request intercepted; API key is undefined"
                 };
             }
 
@@ -137,7 +137,7 @@
                 var result = JsonSerializer.Deserialize(content, jsonTypeInfo);
                 if (result == null)
                 {
-                    throw new InvalidOperationException("Failed to pase response.");
+                    throw new InvalidOperationException("Failed to parse response.");
                 }
 
                 result.StatusCode = response.StatusCode;
@@ -145,7 +145,7 @@
             }
             catch (Exception ex)
             {
-                this.Logger.LogError("Request: {requestUri}, Response: {code}.", request.RequestUri, response.StatusCode);
+                this.Logger.LogError(ex, "Request: {requestUri}, Response: {code}.", request.RequestUri, response.StatusCode);
                 return new TResponse
                 {
                     StatusCode = response.StatusCode,

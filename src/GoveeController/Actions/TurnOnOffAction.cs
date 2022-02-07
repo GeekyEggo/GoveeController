@@ -3,6 +3,7 @@
     using GoveeController.Actions.Settings;
     using GoveeController.Govee.Models;
     using GoveeController.Services;
+    using Microsoft.Extensions.Logging;
     using SharpDeck;
     using SharpDeck.Events.Received;
 
@@ -35,6 +36,13 @@
                 var state = await this.GoveeService.GetDeviceStateAsync(device.Device, device.Model);
                 if (!state.IsSuccess)
                 {
+                    this.Logger.LogWarning("Failed to get state of device; {message}", state.Message);
+                    await this.ShowAlertAsync();
+                    return;
+                }
+                else if (state.Data.Properties?.IsOnline == false)
+                {
+                    this.Logger.LogInformation("Failed to get state of device; device is offline.");
                     await this.ShowAlertAsync();
                     return;
                 }
@@ -43,8 +51,8 @@
             }
 
             // Change the state of the device.
-            await this.GoveeService.TurnOnOffAsync(device.Device, device.Model, turnOn);
-            await this.ShowOkAsync();
+            var response = await this.GoveeService.TurnOnOffAsync(device.Device, device.Model, turnOn);
+            await this.ShowResponseAsync(response);
         }
     }
 }

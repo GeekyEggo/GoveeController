@@ -5,6 +5,7 @@
     using GoveeController.Actions.Settings;
     using GoveeController.Govee.Models;
     using GoveeController.Services;
+    using Microsoft.Extensions.Logging;
     using SharpDeck;
     using SharpDeck.Events.Received;
 
@@ -31,11 +32,12 @@
 
             if (TryGetColorTemperature(device, settings.Temperature, out var temperature))
             {
-                await this.GoveeService.SetColorTemperatureAsync(device.Device, device.Model, temperature);
-                await this.ShowOkAsync();
+                var response = await this.GoveeService.SetColorTemperatureAsync(device.Device, device.Model, temperature);
+                await this.ShowResponseAsync(response);
             }
             else
             {
+                this.Logger.LogWarning("Failed to parse temperature or temperature was not in valid range.", settings.Temperature);
                 await this.ShowAlertAsync();
             }
         }

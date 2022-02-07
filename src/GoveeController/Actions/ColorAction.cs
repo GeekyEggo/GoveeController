@@ -6,6 +6,7 @@
     using GoveeController.Actions.Settings;
     using GoveeController.Govee.Models;
     using GoveeController.Services;
+    using Microsoft.Extensions.Logging;
     using SharpDeck;
     using SharpDeck.Events.Received;
 
@@ -32,11 +33,12 @@
 
             if (TryParseColor(settings.Color, out var color))
             {
-                await this.GoveeService.SetColorAsync(device.Device, device.Model, color.R, color.G, color.B);
-                await this.ShowOkAsync();
+                var response = await this.GoveeService.SetColorAsync(device.Device, device.Model, color.R, color.G, color.B);
+                await this.ShowResponseAsync(response);
             }
             else
             {
+                this.Logger.LogWarning("Failed to parse color; {color}", settings.Color);
                 await this.ShowAlertAsync();
             }
         }

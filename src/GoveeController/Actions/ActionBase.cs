@@ -2,6 +2,7 @@
 {
     using GoveeController.Govee.Models;
     using GoveeController.Services;
+    using Microsoft.Extensions.Logging;
     using SharpDeck;
     using SharpDeck.PropertyInspectors;
     using SharpDeck.PropertyInspectors.Payloads;
@@ -66,6 +67,23 @@
         [PropertyInspectorMethod]
         public Task<Option[]> ReloadDevicesAsync()
             => this.GetDevicesAsync(useCache: false);
+
+        /// <summary>
+        /// Shows the result of the response asynchronously.
+        /// </summary>
+        /// <param name="response">The response to show.</param>
+        protected async Task ShowResponseAsync(Response response)
+        {
+            if (response.IsSuccess)
+            {
+                await this.ShowOkAsync();
+            }
+            else
+            {
+                this.Logger.LogWarning("Action {action} with context {context} failed; {message}", this.ActionUUID, this.Context, response.Message);
+                await this.ShowAlertAsync();
+            }
+        }
 
         /// <summary>
         /// Gets the devices, and maps them to <see cref="Option"/> asynchronously.
