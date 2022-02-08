@@ -15,7 +15,7 @@
         /// <summary>
         /// Gets a value indicating whether this instance represents a success.
         /// </summary>
-        public bool IsSuccess => this.Message == "Success";
+        public bool IsSuccess => this.Message?.Equals("success", StringComparison.OrdinalIgnoreCase) == true;
 
         /// <summary>
         /// Gets or sets the status of the response.
