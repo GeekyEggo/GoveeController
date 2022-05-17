@@ -52,7 +52,6 @@
                 await this._syncRoot.WaitAsync(cancellationToken);
                 if (this.DeviceCollectionCache != null)
                 {
-                    this.Logger.LogDebug("Reading devices from cache.");
                     return this.DeviceCollectionCache;
                 }
 
@@ -102,6 +101,8 @@
             try
             {
                 this._syncRoot.Wait();
+
+                this.Logger.LogDebug("Invalidating device cache.");
                 this.DeviceCollectionCache = null;
             }
             finally

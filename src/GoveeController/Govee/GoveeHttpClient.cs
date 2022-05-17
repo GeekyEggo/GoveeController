@@ -131,7 +131,17 @@
             {
                 // Read the contents of the response, and log them for debugging.
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                this.Logger.LogDebug("Request: {requestUri}, Response: {code} {content}.", request.RequestUri, response.StatusCode, content);
+                await this.LogAsync(request, response, content, cancellationToken);
+
+                // Prevent deserialization if we have been throttled.
+                if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    return new TResponse
+                    {
+                        StatusCode = response.StatusCode,
+                        Message = content
+                    };
+                }
 
                 // Parse the content as JSON, and return.
                 var result = JsonSerializer.Deserialize(content, jsonTypeInfo);
@@ -169,6 +179,29 @@
 
             request.Content = content;
             return await this.SendAsync(request, GoveeJsonContext.Default.Response, cancellationToken);
+        }
+
+        /// <summary>
+        /// Provides detailed logging for a request, and the response.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="response">The response.</param>
+        /// <param name="responseContent">The content of the response.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The task of logging the request and the response.</returns>
+        private async Task LogAsync(HttpRequestMessage request, HttpResponseMessage response, string responseContent, CancellationToken cancellationToken)
+        {
+            if (!this.Logger.IsEnabled(LogLevel.Debug))
+            {
+                return;
+            }
+
+            var requestContent = await (request.Content?.ReadAsStringAsync(cancellationToken) ?? Task.FromResult(string.Empty));
+            var requestLog = string.IsNullOrWhiteSpace(requestContent)
+                ? $"Request: {request.Method} {request.RequestUri}"
+                : $"Request: {request.Method} {request.RequestUri}, Content: {requestContent}";
+
+            this.Logger.LogDebug("Communicating with Govee...{newLine}{request}{newLine}Response: {code} {content}", Environment.NewLine, requestLog, Environment.NewLine, response.StatusCode, responseContent);
         }
     }
 }

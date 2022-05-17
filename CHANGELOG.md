@@ -6,6 +6,7 @@
 
 - Support for macOS.
 - Custom logging to assist with debugging `%appdata%\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\logs`.
+- Error handling for API throttling.
 
 ## v1.0.0
 
