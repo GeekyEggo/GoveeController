@@ -1,5 +1,5 @@
-name: "\U0001F41E Bug Report"
-description: Create a report to help improve the Govee Controller plugin
+name: Bug Report
+description: File a bug report to help improve the plugin.
 labels:
   - "\U0001F41E bug"
 assignees:
