@@ -1,0 +1,50 @@
+name: Bug Report
+description: Create a report to help improve the Govee Controller plugin
+labels:
+  - "\U0001F41E bug"
+assignees:
+  - GeekyEggo
+  
+body:
+  - type: checkboxes
+    id: pre-checks
+    attributes:
+      label: Pre-Checks
+      options:
+        - label: The device is connected to WiFi.
+          required: true
+        - label: The device is supported by [Govees API](https://govee-public.s3.amazonaws.com/developer-docs/GoveeAPIReference.pdf).
+          required: true
+        
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System?
+      options:
+        - macOS
+        - Windows
+    validations:
+      required: true
+      
+  - type: textarea
+    id: device
+    attributes:
+      label: Govee Device
+      description: Please include the device model number, and the type of device, e.g. lightstrip.
+    validations:
+      required: true
+    
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Be descriptive as possible, when does the bug occur, can it be replicated reliably, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Please copy and paste any relevant logs from `%appdata%\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\logs`
+      render: bash
