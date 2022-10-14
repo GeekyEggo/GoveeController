@@ -23,8 +23,9 @@
             .ConfigureServices(services =>
                 {
                     services
+                        .AddSingleton<AuthorizationProvider>()
                         .AddSingleton<GoveeService>()
-                        .AddHostedService<GoveeController.Services.GoveeConnectorBackgroundService>();
+                        .AddHttpClient(nameof(GoveeHttpClient), c => c.BaseAddress = GoveeHttpClient.BaseAddress);
                 })
                 .RunStreamDeckPlugin();
         }

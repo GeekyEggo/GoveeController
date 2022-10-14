@@ -13,50 +13,42 @@
     public class GoveeHttpClient
     {
         /// <summary>
+        /// The base address.
+        /// </summary>
+        public static readonly Uri BaseAddress = new Uri("https://developer-api.govee.com/v1/devices/");
+
+        /// <summary>
         /// The application/json header media type.
         /// </summary>
         private const string APPLICATION_JSON_MEDIA_TYPE = "application/json";
 
         /// <summary>
-        /// The Govee API key header name.
+        /// Initializes a new instance of the <see cref="GoveeHttpClient" /> class.
         /// </summary>
-        public const string GOVEE_API_KEY_HEADER_NAME = "Govee-API-Key";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GoveeHttpClient"/> class.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        public GoveeHttpClient(ILogger<GoveeHttpClient> logger)
-            => this.Logger = logger;
-
-        /// <summary>
-        /// Gets the HTTP client.
-        /// </summary>
-        private HttpClient HttpClient { get; } = new HttpClient
+        /// <param name="authorizationProvider">The authorization provider.</param>
+        /// <param name="httpClientFactory">The HTTP client factory.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public GoveeHttpClient(AuthorizationProvider authorizationProvider, IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
         {
-            BaseAddress = new Uri("https://developer-api.govee.com/v1/devices/")
-        };
+            this.AuthorizationProvider = authorizationProvider;
+            this.Logger = loggerFactory.CreateLogger<GoveeHttpClient>();
+            this.HttpClientFactory = httpClientFactory;
+        }
 
         /// <summary>
-        /// Gets a value indicating whether this instance has API key set.
+        /// Gets the authorization provider.
         /// </summary>
-        private bool HasApiKey => this.HttpClient.DefaultRequestHeaders.TryGetValues(GOVEE_API_KEY_HEADER_NAME, out var values) && values.Any(value => !string.IsNullOrWhiteSpace(value));
+        protected AuthorizationProvider AuthorizationProvider { get; }
+
+        /// <summary>
+        /// Gets the HTTP client factory.
+        /// </summary>
+        private IHttpClientFactory HttpClientFactory { get; }
 
         /// <summary>
         /// Gets the logger.
         /// </summary>
         private ILogger Logger { get; }
-
-        /// <inheritdoc/>
-        public void SetApiKey(string key)
-        {
-            if (!this.HttpClient.DefaultRequestHeaders.TryGetValues(GOVEE_API_KEY_HEADER_NAME, out var values)
-                || values.FirstOrDefault() != key)
-            {
-                this.HttpClient.DefaultRequestHeaders.Remove(GOVEE_API_KEY_HEADER_NAME);
-                this.HttpClient.DefaultRequestHeaders.Add(GOVEE_API_KEY_HEADER_NAME, key);
-            }
-        }
 
         /// <summary>
         /// Gets the devices asynchronously.
@@ -154,7 +146,7 @@
             where TResponse : Response, new()
         {
             // Only make a request when we have an API key set.
-            if (!this.HasApiKey)
+            if (!await this.AuthorizationProvider.TryAuthorizeAsync(request, cancellationToken))
             {
                 return new TResponse
                 {
@@ -163,40 +155,53 @@
                 };
             }
 
-            using var response = await this.HttpClient.SendAsync(request, cancellationToken);
-
             try
             {
-                // Read the contents of the response, and log them for debugging.
-                var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                await this.LogAsync(request, response, content, cancellationToken);
+                // Don't dispose of the client; this is handled interally (https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests).
+                var httpClient = this.HttpClientFactory.CreateClient(nameof(GoveeHttpClient));
+                using var response = await httpClient.SendAsync(request, cancellationToken);
 
-                // Prevent deserialization if we have been throttled.
-                if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                try
                 {
+                    // Read the contents of the response, and log them for debugging.
+                    var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                    await this.LogAsync(request, response, content, cancellationToken);
+
+                    // Prevent deserialization if we have been throttled.
+                    if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                    {
+                        return new TResponse
+                        {
+                            StatusCode = response.StatusCode,
+                            Message = content
+                        };
+                    }
+
+                    // Parse the content as JSON, and return.
+                    var result = JsonSerializer.Deserialize(content, jsonTypeInfo);
+                    if (result == null)
+                    {
+                        throw new InvalidOperationException("Failed to parse response.");
+                    }
+
+                    result.StatusCode = response.StatusCode;
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    this.Logger.LogError(ex, "Request: {requestUri}, Response: {code}.", request.RequestUri, response.StatusCode);
                     return new TResponse
                     {
                         StatusCode = response.StatusCode,
-                        Message = content
+                        Message = ex.Message
                     };
                 }
-
-                // Parse the content as JSON, and return.
-                var result = JsonSerializer.Deserialize(content, jsonTypeInfo);
-                if (result == null)
-                {
-                    throw new InvalidOperationException("Failed to parse response.");
-                }
-
-                result.StatusCode = response.StatusCode;
-                return result;
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "Request: {requestUri}, Response: {code}.", request.RequestUri, response.StatusCode);
                 return new TResponse
                 {
-                    StatusCode = response.StatusCode,
+                    StatusCode = HttpStatusCode.InternalServerError,
                     Message = ex.Message
                 };
             }

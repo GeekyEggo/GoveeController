@@ -15,20 +15,14 @@
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GoveeService"/> class.
+        /// Initializes a new instance of the <see cref="GoveeService" /> class.
         /// </summary>
-        /// <param name="streamDeckConnection">The Stream Deck connection.</param>
-        public GoveeService(IStreamDeckConnection streamDeckConnection, ILoggerFactory loggerFactory)
-            : base(loggerFactory.CreateLogger<GoveeHttpClient>())
-        {
-            StreamDeckConnection = streamDeckConnection;
-            Logger = loggerFactory.CreateLogger<GoveeService>();
-        }
-
-        /// <summary>
-        /// Gets the Stream Deck connection.
-        /// </summary>
-        private IStreamDeckConnection StreamDeckConnection { get; }
+        /// <param name="authorizationProvider">The authorization provider.</param>
+        /// <param name="httpClientFactory">The HTTP client factory.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        public GoveeService(AuthorizationProvider authorizationProvider, IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+            : base(authorizationProvider, httpClientFactory, loggerFactory)
+            => this.Logger = loggerFactory.CreateLogger<GoveeService>();
 
         /// <summary>
         /// Gets or sets the device collection cache.
@@ -48,21 +42,22 @@
         /// <returns>The device information.</returns>
         public override async Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default)
         {
+            await _syncRoot.WaitAsync(cancellationToken);
+
             try
             {
-                await _syncRoot.WaitAsync(cancellationToken);
-                if (DeviceCollectionCache != null)
+                if (this.DeviceCollectionCache != null)
                 {
-                    return DeviceCollectionCache;
+                    return this.DeviceCollectionCache;
                 }
 
-                Logger.LogDebug("Getting devices from API.");
+                this.Logger.LogDebug("Getting devices from API.");
                 var response = await base.GetDevicesAsync(cancellationToken);
 
                 if (response.IsSuccess)
                 {
-                    Logger.LogDebug("Updated device list cache.");
-                    DeviceCollectionCache = response;
+                    this.Logger.LogDebug("Updated device list cache.");
+                    this.DeviceCollectionCache = response;
                 }
 
                 return response;
@@ -86,7 +81,7 @@
                 throw new ArgumentNullException(nameof(deviceId), "Device identifier cannot be null.");
             }
 
-            var devices = await GetDevicesAsync(cancellationToken);
+            var devices = await this.GetDevicesAsync(cancellationToken);
             if (!devices.IsSuccess)
             {
                 throw new Exception("Failed to load devices.");
@@ -106,35 +101,16 @@
         /// </summary>
         public void InvalidateCache()
         {
+            _syncRoot.Wait();
+
             try
             {
-                _syncRoot.Wait();
-
-                Logger.LogDebug("Invalidating device cache.");
-                DeviceCollectionCache = null;
+                this.InvalidateCacheInternal();
             }
             finally
             {
                 _syncRoot.Release();
             }
-        }
-
-        /// <summary>
-        /// Attempts to connect to the Govee API using the API key stored in the global settings asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The optional cancellation token.</param>
-        /// <returns>The result of connecting to the Govee API.</returns>
-        public async ValueTask<ConnectionResponse> TryConnectAsync(CancellationToken cancellationToken = default)
-        {
-            var globalSettings = await StreamDeckConnection.GetGlobalSettingsAsync<Settings>(cancellationToken);
-
-            if (string.IsNullOrWhiteSpace(globalSettings.ApiKey))
-            {
-                await StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
-                return new ConnectionResponse(false, "API key is not defined in global settings");
-            }
-
-            return await TryConnectAsync(globalSettings.ApiKey, cancellationToken);
         }
 
         /// <summary>
@@ -150,24 +126,19 @@
                 return new ConnectionResponse(false, "API key is null or undefined");
             }
 
+            await _syncRoot.WaitAsync(cancellationToken);
+
             try
             {
-                await _syncRoot.WaitAsync(cancellationToken);
-
-                SetApiKey(apiKey);
-                DeviceCollectionCache = null;
+                await this.AuthorizationProvider.SetAuthorizationAsync(apiKey, cancellationToken);
+                this.DeviceCollectionCache = null;
             }
             finally
             {
                 _syncRoot.Release();
             }
 
-            var response = await GetDevicesAsync(cancellationToken);
-            if (response.IsSuccess)
-            {
-                await StreamDeckConnection.SetGlobalSettingsAsync(new Settings(true, apiKey), cancellationToken);
-            }
-
+            var response = await this.GetDevicesAsync(cancellationToken);
             return new ConnectionResponse(response.IsSuccess, response.Message);
         }
 
@@ -177,14 +148,24 @@
             var response = await base.SendAsync(request, jsonTypeInfo, cancellationToken);
 
             // When the request failed due to an API key problem, set the global settings to represent the failure.
-            if (response.StatusCode == HttpStatusCode.Unauthorized
-                || response.StatusCode == HttpStatusCode.Forbidden)
+            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
             {
-                Logger.LogInformation($"Request contains bad API key, reseting global settings.");
-                await StreamDeckConnection.SetGlobalSettingsAsync(new Settings(false), cancellationToken);
+                this.Logger.LogInformation($"Request contains bad API key, reseting authorization.");
+
+                await this.AuthorizationProvider.SetAuthorizationAsync(cancellationToken: cancellationToken);
+                this.InvalidateCacheInternal();
             }
 
             return response;
+        }
+
+        /// <summary>
+        /// Invalidates the <see cref="DeviceCollection"/>.
+        /// </summary>
+        private void InvalidateCacheInternal()
+        {
+            this.Logger.LogDebug("Invalidating device cache.");
+            this.DeviceCollectionCache = null;
         }
     }
 
@@ -192,9 +173,4 @@
     /// Provides information about the response of an attempted connect to the Govee API.
     /// </summary>
     public record ConnectionResponse(bool IsSuccess, string? Message = default);
-
-    /// <summary>
-    /// Provides information about the global settings of the plugin.
-    /// </summary>
-    public record Settings(bool IsConnected = false, string? ApiKey = default);
 }
