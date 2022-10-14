@@ -1,13 +1,6 @@
 ﻿namespace GoveeController.Actions
 {
     using System.Diagnostics.CodeAnalysis;
-    using System.Threading.Tasks;
-    using GoveeController.Actions.Settings;
-    using GoveeController.Govee.Models;
-    using GoveeController.Services;
-    using Microsoft.Extensions.Logging;
-    using SharpDeck;
-    using SharpDeck.Events.Received;
 
     /// <summary>
     /// Provides an action capable of setting the color temperature of a device.
@@ -19,7 +12,7 @@
         /// Initializes a new instance of the <see cref="ColorTemperatureAction"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        public ColorTemperatureAction(IGoveeService goveeService)
+        public ColorTemperatureAction(GoveeService goveeService)
             : base(goveeService, CommandType.ColorTemperature)
         {
         }

@@ -1,7 +1,6 @@
 ﻿namespace GoveeController.Govee
 {
     using System.Text.Json.Serialization;
-    using GoveeController.Govee.Models;
 
     /// <summary>
     /// Provides meta data and source generation for JSON objects.

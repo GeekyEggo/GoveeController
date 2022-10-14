@@ -1,12 +1,5 @@
 ﻿namespace GoveeController.Actions
 {
-    using System.Threading.Tasks;
-    using GoveeController.Actions.Settings;
-    using GoveeController.Govee.Models;
-    using GoveeController.Services;
-    using SharpDeck;
-    using SharpDeck.Events.Received;
-
     /// <summary>
     /// Provides an action that is capable of setting the brightness of a device.
     /// </summary>
@@ -17,7 +10,7 @@
         /// Initializes a new instance of the <see cref="BrightnessAction"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        public BrightnessAction(IGoveeService goveeService)
+        public BrightnessAction(GoveeService goveeService)
             : base(goveeService, CommandType.Brightness)
         {
         }

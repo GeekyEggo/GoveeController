@@ -5,14 +5,12 @@
     using System.Text.Json;
     using System.Text.Json.Serialization.Metadata;
     using GoveeController.Extensions;
-    using GoveeController.Govee.Models;
     using GoveeController.Govee.Serialization;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Provides methods for interacting with Govee devices.
     /// </summary>
-    public class GoveeHttpClient : IGoveeClient
+    public class GoveeHttpClient
     {
         /// <summary>
         /// The application/json header media type.
@@ -60,28 +58,54 @@
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the devices asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response that contains the devices.</returns>
         public virtual async Task<Response<DeviceCollection>> GetDevicesAsync(CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, string.Empty);
             return await this.SendAsync(request, GoveeJsonContext.Default.ResponseDeviceCollection, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the state of the device asynchronously.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response containing the state of the device.</returns>
         public async Task<Response<DeviceState>> GetDeviceStateAsync(string device, string model, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, $"state?device={Uri.EscapeDataString(device)}&model={Uri.EscapeDataString(model)}");
             return await this.SendAsync(request, GoveeJsonContext.Default.ResponseDeviceState, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Sets the brightness of the device asynchronously.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="brightness">The brightness.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response indicating the success of setting the brightness.</returns>
         public Task<Response> SetBrightnessAsync(string device, string model, int brightness, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<int>(device, model, CommandNames.Brightness, brightness.InRangeOf(0, 100));
             return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadInt32, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Sets the color of the device asynchronously.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="red">The red value.</param>
+        /// <param name="green">The green value.</param>
+        /// <param name="blue">The blue value.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response indicating the success of setting the color.</returns>
         public Task<Response> SetColorAsync(string device, string model, int red, int green, int blue, CancellationToken cancellationToken = default)
         {
             var rgbValue = new RgbValue(red.InColorRange(), green.InColorRange(), blue.InColorRange());
@@ -90,14 +114,28 @@
             return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadRgbValue, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Sets the color temperature of the device asynchronously.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="temperature">The color temperature.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response indicating the success of setting the color temperature.</returns>
         public Task<Response> SetColorTemperatureAsync(string device, string model, int temperature, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<int>(device, model, CommandNames.ColorTemperature, temperature);
             return this.ControlAsync(payload, GoveeJsonContext.Default.ControlPayloadInt32, cancellationToken);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Turns the device on/off asynchronously.
+        /// </summary>
+        /// <param name="device">The device.</param>
+        /// <param name="model">The model.</param>
+        /// <param name="turnOn"><c>true</c> will turn the device on; otherwise <c>false</c> turns the device of.</param>
+        /// <param name="cancellationToken">The optional cancellation token.</param>
+        /// <returns>The response indicating the success of setting the state of the device.</returns>
         public Task<Response> TurnOnOffAsync(string device, string model, bool turnOn, CancellationToken cancellationToken = default)
         {
             var payload = new ControlPayload<string>(device, model, CommandNames.Turn, turnOn ? OnOffBooleanJsonConverter.TRUE : OnOffBooleanJsonConverter.FALSE);

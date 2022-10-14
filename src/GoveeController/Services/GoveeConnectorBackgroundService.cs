@@ -14,7 +14,7 @@
         /// Initializes a new instance of the <see cref="GoveeConnectorBackgroundService"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        public GoveeConnectorBackgroundService(IGoveeService goveeService, ILogger<GoveeConnectorBackgroundService> logger)
+        public GoveeConnectorBackgroundService(GoveeService goveeService, ILogger<GoveeConnectorBackgroundService> logger)
             : base()
         {
             this.GoveeService = goveeService;
@@ -24,7 +24,7 @@
         /// <summary>
         /// Gets the Govee service.
         /// </summary>
-        private IGoveeService GoveeService { get; }
+        private GoveeService GoveeService { get; }
 
         /// <summary>
         /// Gets the logger.
