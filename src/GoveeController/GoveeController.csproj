@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\SharpDeck\src\SharpDeck.Extensions.Hosting\SharpDeck.Extensions.Hosting.csproj" />
+	  <ProjectReference Include="..\..\..\SharpDeck\src\SharpDeck\SharpDeck.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
