@@ -2,13 +2,6 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
-    using System.Threading.Tasks;
-    using GoveeController.Actions.Settings;
-    using GoveeController.Govee.Models;
-    using GoveeController.Services;
-    using Microsoft.Extensions.Logging;
-    using SharpDeck;
-    using SharpDeck.Events.Received;
 
     /// <summary>
     /// Provides an action capable of setting the color of a device.
@@ -20,7 +13,7 @@
         /// Initializes a new instance of the <see cref="ColorAction"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        public ColorAction(IGoveeService goveeService)
+        public ColorAction(GoveeService goveeService)
             : base(goveeService, CommandType.Color)
         {
         }

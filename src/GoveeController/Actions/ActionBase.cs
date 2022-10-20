@@ -1,12 +1,5 @@
 ﻿namespace GoveeController.Actions
 {
-    using GoveeController.Govee.Models;
-    using GoveeController.Services;
-    using Microsoft.Extensions.Logging;
-    using SharpDeck;
-    using SharpDeck.PropertyInspectors;
-    using SharpDeck.PropertyInspectors.Payloads;
-
     /// <summary>
     /// Provides a base class that supports all actions.
     /// </summary>
@@ -17,7 +10,7 @@
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
         /// <param name="command">The command this instance supports.</param>
-        protected ActionBase(IGoveeService goveeService, CommandType command)
+        protected ActionBase(GoveeService goveeService, CommandType command)
             : base()
         {
             this.Command = command;
@@ -32,7 +25,7 @@
         /// <summary>
         /// Gets the Govee service used to interact with devices.
         /// </summary>
-        protected IGoveeService GoveeService { get; }
+        protected GoveeService GoveeService { get; }
 
         /// <summary>
         /// Connects to the Govee API asynchronously.

@@ -1,12 +1,5 @@
 ﻿namespace GoveeController.Actions
 {
-    using GoveeController.Actions.Settings;
-    using GoveeController.Govee.Models;
-    using GoveeController.Services;
-    using Microsoft.Extensions.Logging;
-    using SharpDeck;
-    using SharpDeck.Events.Received;
-
     /// <summary>
     /// Provides an action that is capable of controlling the on/off state of a device.
     /// </summary>
@@ -17,7 +10,7 @@
         /// Initializes a new instance of the <see cref="TurnOnOffAction"/> class.
         /// </summary>
         /// <param name="goveeService">The Govee service.</param>
-        public TurnOnOffAction(IGoveeService goveeService)
+        public TurnOnOffAction(GoveeService goveeService)
             : base(goveeService, CommandType.TurnOnOff)
         {
         }

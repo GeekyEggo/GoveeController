@@ -77,8 +77,10 @@
 
     customElements.define('govee-setup', GoveeSetup);
 
+    let localApiKey = null;
+    let isDeviceCollectionDirty = false;
+
     /* Handles toggling of the desired panel. */
-    let shouldRefresh = false;
     const showSettings = function (canShowSettings) {
         const setup = document.getElementsByTagName('govee-setup')[0];
         const settings = document.getElementById('settings');
@@ -86,8 +88,9 @@
         const show = function (elem) { elem.classList.remove('hidden') };
         const hide = function (elem) { elem.classList.add('hidden'); }
 
+        console.log('canShowSettings', canShowSettings);
         if (canShowSettings) {
-            if (shouldRefresh) {
+            if (isDeviceCollectionDirty) {
                 console.log('refreshing');
                 document.getElementById('deviceId').refresh();
             }
@@ -102,11 +105,11 @@
 
     /* Monitor global settings changing. */
     window.streamDeckClient.didReceiveGlobalSettings.subscribe(globalSettings => {
-        if (!globalSettings.payload.settings.isConnected) {
-            shouldRefresh = true;
-        }
+        const apiKey = globalSettings.payload?.settings?.apiKey;
+        isDeviceCollectionDirty = apiKey != localApiKey;
+        localApiKey = apiKey
 
-        showSettings(globalSettings.payload.settings.isConnected);
+        showSettings(!!apiKey);
     })
 
     /* Invoke a request for the global settings. */

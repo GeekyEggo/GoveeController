@@ -1,6 +1,5 @@
 ﻿namespace GoveeController
 {
-    using GoveeController.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using SharpDeck.Extensions.Hosting;
@@ -21,11 +20,12 @@
 #endif
 
             StreamDeckPluginHost.CreateDefaultBuilder()
-                .ConfigureServices(services =>
+            .ConfigureServices(services =>
                 {
                     services
-                        .AddSingleton<IGoveeService, GoveeService>()
-                        .AddHostedService<GoveeConnectorBackgroundService>();
+                        .AddSingleton<AuthorizationProvider>()
+                        .AddSingleton<GoveeService>()
+                        .AddHttpClient(nameof(GoveeHttpClient), c => c.BaseAddress = GoveeHttpClient.BaseAddress);
                 })
                 .RunStreamDeckPlugin();
         }
