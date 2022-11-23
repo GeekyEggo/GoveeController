@@ -46,5 +46,5 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: Please copy and paste any relevant logs from `%appdata%\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\logs`
+      description: Please copy and paste any relevant logs from `%appdata%\Elgato\StreamDeck\Plugins\com.geekyeggo.goveecontroller.sdPlugin\win\logs`
       render: bash
