@@ -2,9 +2,13 @@
 [![beta-version-icon]](https://github.com/GeekyEggo/GoveeController/raw/main/dist/com.geekyeggo.goveecontroller.streamDeckPlugin)
 [![Twitter icon](https://img.shields.io/static/v1?style=flat-square&message=GeekyEggo&logo=Twitter&label=&color=blue&logoColor=white&labelColor=grey)](https://www.twitter.com/geekyeggo)
 
-<img src="./assets/icon-round.svg" alt="Govee Controller" />
+<p align="center">
+    <a href="https://apps.elgato.com/plugins/com.geekyeggo.goveecontroller" rel="nofollow">
+        <img align="center" src="./assets/icon-round.svg" width="300" alt="Govee Controller" title="Download Govee Controller from the Elgato Stream Deck store" />
+    </a>
+</p>
 
-# Govee Controller
+<h1 align="center">Govee Controller</h1>
 
 Govee Controller is a plugin for the Elgato Stream Deck that allows for the control of [Govee](https://govee.com) lights!
 
