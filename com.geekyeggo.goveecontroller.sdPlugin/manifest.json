@@ -1,46 +1,84 @@
 {
-	"Name": "GoveeController",
-	"Version": "0.1.0",
+	"$schema": "../node_modules/@elgato/streamdeck/schemas/manifest.json",
+	"Name": "Govee Controller",
+	"Version": "1.2.3",
 	"Author": "GeekyEggo",
+	"URL": "https://github.com/GeekyEggo/GoveeController",
 	"Actions": [
 		{
-			"Name": "Counter",
-			"UUID": "com.geekyeggo.goveecontroller_.increment",
-			"Icon": "imgs/actions/counter/icon",
-			"Tooltip": "Displays a count, which increments by one on press.",
-			"Controllers": [
-				"Keypad"
-			],
+			"Name": "On / Off",
+			"UUID": "com.geekyeggo.goveecontroller.turnonoff",
+			"Icon": "imgs/actions/turn-on-off/action",
+			"Tooltip": "Turns a device on or off",
 			"States": [
 				{
-					"Image": "imgs/actions/counter/key",
-					"TitleAlignment": "middle"
+					"FontSize": "12",
+					"Image": "imgs/actions/turn-on-off/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Brightness",
+			"UUID": "com.geekyeggo.goveecontroller.brightness",
+			"Icon": "imgs/actions/brightness/action",
+			"Tooltip": "Sets the brightness of a device",
+			"States": [
+				{
+					"FontSize": "12",
+					"Image": "imgs/actions/brightness/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Color",
+			"UUID": "com.geekyeggo.goveecontroller.color",
+			"Icon": "imgs/actions/color/action",
+			"Tooltip": "Sets the color of a device",
+			"States": [
+				{
+					"FontSize": "12",
+					"Image": "imgs/actions/color/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Color Temperature",
+			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
+			"Icon": "imgs/actions/color-temperature/Action",
+			"Tooltip": "Sets the color temperature of a device",
+			"States": [
+				{
+					"FontSize": "12",
+					"Image": "imgs/actions/color-temperature/Key",
+					"TitleAlignment": "bottom"
 				}
 			]
 		}
 	],
-	"Category": "GoveeController",
-	"CategoryIcon": "imgs/plugin/category-icon",
+	"Category": "Govee Controller",
+	"CategoryIcon": "imgs/plugin/category",
 	"CodePath": "bin/plugin.js",
-	"Description": ".",
-	"Icon": "imgs/plugin/marketplace",
+	"Description": "Take control of your Govee lights with the push of a button!",
+	"Icon": "imgs/plugin/icon",
+	"Nodejs": {
+		"Version": "20",
+		"Debug": "enabled"
+	},
 	"SDKVersion": 2,
 	"Software": {
 		"MinimumVersion": "6.4"
 	},
 	"OS": [
 		{
-			"Platform": "mac",
-			"MinimumVersion": "10.15"
+			"MinimumVersion": "10",
+			"Platform": "windows"
 		},
 		{
-			"Platform": "windows",
-			"MinimumVersion": "10"
+			"MinimumVersion": "10.11",
+			"Platform": "mac"
 		}
-	],
-	"Nodejs": {
-		"Version": "20",
-		"Debug": "enabled"
-	},
-	"UUID": "com.geekyeggo.goveecontroller_"
+	]
 }
