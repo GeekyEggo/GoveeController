@@ -1,9 +1,30 @@
 {
-  "scripts": {
-    "dist": "./dist/package.sh",
-    "watch": "nodemon -w ./src/GoveeController/pi --exec \"cp -R src\\GoveeController\\pi $APPDATA\\Elgato\\StreamDeck\\plugins\\com.geekyeggo.goveecontroller.sdPlugin\""
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.20"
-  }
+	"scripts": {
+		"build": "rollup -c",
+		"postinstall": "sd link com.geekyeggo.goveecontroller.sdPlugin",
+		"watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.geekyeggo.goveecontroller\""
+	},
+	"devDependencies": {
+		"@elgato/cli": "^0.1.0",
+		"@rollup/plugin-commonjs": "^25.0.5",
+		"@rollup/plugin-node-resolve": "^15.2.2",
+		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-typescript": "^11.1.5",
+		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
+		"@tsconfig/node20": "^20.1.2",
+		"@types/node": "^20.10.0",
+		"@typescript-eslint/eslint-plugin": "^6.12.0",
+		"@typescript-eslint/parser": "^6.12.0",
+		"eslint": "^8.54.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-jsdoc": "^46.9.0",
+		"eslint-plugin-prettier": "^5.0.1",
+		"prettier": "^3.1.0",
+		"rollup": "^4.0.2",
+		"tslib": "^2.6.2",
+		"typescript": "^5.3.2"
+	},
+	"dependencies": {
+		"@elgato/streamdeck": "^0.2.0-rc.0"
+	}
 }
