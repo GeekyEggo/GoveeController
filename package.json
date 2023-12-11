@@ -1,6 +1,9 @@
 {
 	"scripts": {
 		"build": "rollup -c",
+		"bundle": "./dist/DistributionTool.exe -b -i ./com.geekyeggo.goveecontroller.sdPlugin -o ./dist/",
+		"clean": "rm -f ./dist/com.geekyeggo.goveecontroller.streamDeckPlugin",
+		"dist": "npm run build && npm run clean && npm run bundle",
 		"postinstall": "sd link com.geekyeggo.goveecontroller.sdPlugin",
 		"watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.geekyeggo.goveecontroller\""
 	},
