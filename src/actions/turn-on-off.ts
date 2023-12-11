@@ -10,13 +10,13 @@ import { DataSourceRequest, trySendDevices } from "../ui";
 export class TurnOnOff extends SingletonAction<TurnOnOffSettings> {
 	/** @inheritdoc */
 	public async onKeyDown(ev: KeyDownEvent<TurnOnOffSettings>): Promise<void> {
-		// Ensure we have device information.
-		const { deviceId, operation } = ev.payload.settings;
-		if (deviceId === null || operation === null) {
-			return ev.action.showAlert();
-		}
-
 		try {
+			// Ensure we have device information.
+			const { deviceId, operation } = ev.payload.settings;
+			if (deviceId === undefined) {
+				throw new Error("No device selected.");
+			}
+
 			// Find the device.
 			const device = (await goveeClient.getDevices()).find((d) => d.device === deviceId);
 			if (device === undefined) {
@@ -41,7 +41,7 @@ export class TurnOnOff extends SingletonAction<TurnOnOffSettings> {
 			await ev.action.showOk();
 		} catch (e) {
 			ev.action.showAlert();
-			streamDeck.logger.error("Failed to set power state of device", e);
+			streamDeck.logger.error("Failed to set power state of device.", e);
 		}
 	}
 

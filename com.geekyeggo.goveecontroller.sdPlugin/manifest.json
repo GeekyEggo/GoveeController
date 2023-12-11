@@ -24,6 +24,7 @@
 			"UUID": "com.geekyeggo.goveecontroller.brightness",
 			"Icon": "imgs/actions/brightness/action",
 			"Tooltip": "Sets the brightness of a device",
+			"PropertyInspectorPath": "pi/brightness.html",
 			"States": [
 				{
 					"FontSize": "12",

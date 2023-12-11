@@ -1,4 +1,4 @@
-import { OnOff } from "./capability";
+import type { Capability } from "./capability";
 
 /**
  * Provides identifiable information about a Govee device.
@@ -22,7 +22,7 @@ export type DeviceMetadata = Device & {
 	/**
 	 * Device capabilities.
 	 */
-	capabilities: OnOff[];
+	capabilities: Capability[];
 
 	/**
 	 * Name of the device, as defined within the Govee Home App.

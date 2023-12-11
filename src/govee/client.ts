@@ -2,10 +2,11 @@ import streamDeck from "@elgato/streamdeck";
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import crypto from "node:crypto";
 import type { GlobalSettings } from "../global-settings";
-import { GoveeResponse } from "./common";
-import type { ControlRequest, ControlResponse, OnOffControl } from "./control";
+import type { Capability } from "./capability";
+import type { GoveeResponse } from "./common";
+import type { ControlRequest, ControlResponse } from "./control";
 import type { Device, DeviceMetadata } from "./device";
-import { StateRequest, StateResponse } from "./state";
+import type { StateRequest, StateResponse } from "./state";
 
 let devicesCache: DeviceMetadata[] | undefined = undefined;
 
@@ -50,6 +51,22 @@ class GoveeClient {
 	}
 
 	/**
+	 * Sets the device brightness.
+	 * @param device The device.
+	 * @param brightness New brightness.
+	 */
+	public async setBrightness(device: Device, brightness: number): Promise<void> {
+		await this.control(
+			device,
+			{
+				instance: "brightness",
+				type: "devices.capabilities.range"
+			},
+			brightness
+		);
+	}
+
+	/**
 	 * Toggles the power state of the specified device.
 	 * @param device Device to whose power state will be updated.
 	 */
@@ -61,7 +78,14 @@ class GoveeClient {
 			throw new Error("Device does not support switching power state");
 		}
 
-		this.setPowerSwitch(device, capability.state.value === 0);
+		await this.control(
+			device,
+			{
+				instance: "powerSwitch",
+				type: "devices.capabilities.on_off"
+			},
+			1 - capability.state.value
+		);
 	}
 
 	/**
@@ -69,7 +93,14 @@ class GoveeClient {
 	 * @param device Device to turn off.
 	 */
 	public async turnOff(device: Device): Promise<void> {
-		await this.setPowerSwitch(device, false);
+		await this.control(
+			device,
+			{
+				instance: "powerSwitch",
+				type: "devices.capabilities.on_off"
+			},
+			1
+		);
 	}
 
 	/**
@@ -77,7 +108,43 @@ class GoveeClient {
 	 * @param device Device to turn on.
 	 */
 	public async turnOn(device: Device): Promise<void> {
-		await this.setPowerSwitch(device, true);
+		await this.control(
+			device,
+			{
+				instance: "powerSwitch",
+				type: "devices.capabilities.on_off"
+			},
+			1
+		);
+	}
+
+	/**
+	 * Controls the device.
+	 * @param device Device to control.
+	 * @param capability Capability to change.
+	 * @param value New value.
+	 * @returns The result of controlling the device.
+	 */
+	private async control<T extends Capability>(device: Device, capability: T, value: unknown): Promise<AxiosResponse<ControlResponse<T>>> {
+		const res = await axios.post(
+			"https://openapi.api.govee.com/router/api/v1/device/control",
+			{
+				payload: {
+					...device,
+					capability: {
+						...capability,
+						value
+					}
+				},
+				requestId: crypto.randomUUID()
+			} satisfies ControlRequest<T>,
+			{
+				headers: await this.getHeaders()
+			}
+		);
+
+		this.validate(res, "Failed to control device.");
+		return res.data;
 	}
 
 	/**
@@ -90,35 +157,6 @@ class GoveeClient {
 			"Content-Type": "application/json",
 			"Govee-API-Key": apiKey
 		};
-	}
-
-	/**
-	 * Sets the power state of the {@link device}.
-	 * @param device Device to control.
-	 * @param on `true` when the device should be turned on.
-	 * @returns Promise fulfilled when the request has been sent to Govee.
-	 */
-	private async setPowerSwitch(device: Device, on: boolean): Promise<AxiosResponse<ControlResponse<OnOffControl>>> {
-		const res = await axios.post(
-			"https://openapi.api.govee.com/router/api/v1/device/control",
-			{
-				requestId: crypto.randomUUID(),
-				payload: {
-					...device,
-					capability: {
-						instance: "powerSwitch",
-						type: "devices.capabilities.on_off",
-						value: on ? 1 : 0
-					}
-				}
-			} satisfies ControlRequest,
-			{
-				headers: await this.getHeaders()
-			}
-		);
-
-		this.validate(res, "Failed to control power state of device.");
-		return res.data;
 	}
 
 	/**

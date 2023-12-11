@@ -1,26 +1,16 @@
-import { Capability, OnOff } from "./capability";
-import { GoveeRequest, GoveeResponse } from "./common";
-import { Device } from "./device";
+import type { Capability } from "./capability";
+import type { GoveeRequest, GoveeResponse } from "./common";
+import type { Device } from "./device";
 
 /**
  * Request to control a Govee device.
  */
-export type ControlRequest = GoveeRequest<
+export type ControlRequest<T extends Capability> = GoveeRequest<
 	Device & {
 		/**
 		 * Capability being changed.
 		 */
-		capability: {
-			/**
-			 * The instance of the capability to control.
-			 */
-			instance: Capability["instance"];
-
-			/**
-			 * The type of the capability to control.
-			 */
-			type: Capability["type"];
-
+		capability: T & {
 			/**
 			 * The new value of the capability.
 			 */
@@ -36,20 +26,15 @@ export type ControlResponse<T> = GoveeResponse & {
 	/**
 	 * Capability associated with the request.
 	 */
-	capability: T;
-};
-
-/**
- * Power state control.
- */
-export type OnOffControl = OnOff & {
-	/**
-	 * State of the control request.
-	 */
-	state: {
+	capability: T & {
 		/**
-		 * Status of the request.
+		 * State of the control request.
 		 */
-		status: string;
+		state: {
+			/**
+			 * Status of the request.
+			 */
+			status: string;
+		};
 	};
 };
