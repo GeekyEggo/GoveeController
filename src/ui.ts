@@ -1,5 +1,5 @@
 import streamDeck, { SendToPluginEvent } from "@elgato/streamdeck";
-import { Capability } from "./govee/capability";
+import type { CapabilityIdentifier } from "./govee/capability";
 import { goveeClient } from "./govee/client";
 
 /**
@@ -16,7 +16,7 @@ export function isRequestingDevices(ev: SendToPluginEvent<object, object>): bool
  * @param ev Action the payload is associated with.
  * @param capability Payload provided by the property inspector.
  */
-export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, object>, capability: Capability): Promise<void> {
+export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, object>, capability: CapabilityIdentifier): Promise<void> {
 	if (!isRequestingDevices(ev)) {
 		return;
 	}

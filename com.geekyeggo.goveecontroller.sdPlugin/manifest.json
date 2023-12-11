@@ -51,6 +51,7 @@
 			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
 			"Icon": "imgs/actions/color-temperature/Action",
 			"Tooltip": "Sets the color temperature of a device",
+			"PropertyInspectorPath": "pi/color-temperature.html",
 			"States": [
 				{
 					"FontSize": "12",

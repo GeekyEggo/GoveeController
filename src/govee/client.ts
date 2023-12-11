@@ -2,7 +2,7 @@ import streamDeck from "@elgato/streamdeck";
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import crypto from "node:crypto";
 import type { GlobalSettings } from "../global-settings";
-import type { Capability } from "./capability";
+import type { CapabilityIdentifier } from "./capability";
 import type { GoveeResponse } from "./common";
 import type { ControlRequest, ControlResponse } from "./control";
 import type { Device, DeviceMetadata } from "./device";
@@ -67,6 +67,22 @@ class GoveeClient {
 	}
 
 	/**
+	 * Sets teh color temperature.
+	 * @param device The device.
+	 * @param temperature New color temperature.
+	 */
+	public async setColorTemperature(device: Device, temperature: number): Promise<void> {
+		await this.control(
+			device,
+			{
+				instance: "colorTemperatureK",
+				type: "devices.capabilities.color_setting"
+			},
+			temperature
+		);
+	}
+
+	/**
 	 * Toggles the power state of the specified device.
 	 * @param device Device to whose power state will be updated.
 	 */
@@ -125,7 +141,7 @@ class GoveeClient {
 	 * @param value New value.
 	 * @returns The result of controlling the device.
 	 */
-	private async control<T extends Capability>(device: Device, capability: T, value: unknown): Promise<AxiosResponse<ControlResponse<T>>> {
+	private async control<T extends CapabilityIdentifier>(device: Device, capability: T, value: unknown): Promise<AxiosResponse<ControlResponse<T>>> {
 		const res = await axios.post(
 			"https://openapi.api.govee.com/router/api/v1/device/control",
 			{

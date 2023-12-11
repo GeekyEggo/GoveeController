@@ -14,6 +14,41 @@ export type Brightness = {
 };
 
 /**
+ * Color temperature of a device.
+ */
+export type ColorTemperature = {
+	/**
+	 * The instance that identifies the capability.
+	 */
+	instance: "colorTemperatureK";
+
+	/**
+	 * The type that identifies the capability.
+	 */
+	type: "devices.capabilities.color_setting";
+
+	/**
+	 * Parameters associated with the capability.
+	 */
+	parameters: {
+		/**
+		 * Range parameter.
+		 */
+		range: {
+			/**
+			 * Max value.
+			 */
+			max: number;
+
+			/**
+			 * Min value.
+			 */
+			min: number;
+		};
+	};
+};
+
+/**
  * Power state of a device.
  */
 export type OnOff = {
@@ -29,6 +64,11 @@ export type OnOff = {
 };
 
 /**
+ * Identifies a capability.
+ */
+export type CapabilityIdentifier = Pick<Capability, "instance" | "type">;
+
+/**
  * A capability that defines functionality available to a Govee device.
  */
-export type Capability = Brightness | OnOff;
+export type Capability = Brightness | ColorTemperature | OnOff;
