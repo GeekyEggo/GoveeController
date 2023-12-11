@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head lang="en-gb">
+    <meta charset="utf-8">
+    <title>Settings</title>
+    <script src="js/sdpi.js"></script>
+    <script src="js/govee-setup.js"></script>
+</head>
+
+<body>
+    <div id="settings" class="container hidden">
+        <sdpi-select id="deviceId" property="deviceId" label="Device" datasource="GetDevicesAsync" refresh="ReloadDevicesAsync"></sdpi-select>
+        <sdpi-select property="operation" label="Action" default="0">
+            <option value="" disabled selected hidden></option>
+            <option value="0">Toggle On/Off</option>
+            <option value="1">Turn On</option>
+            <option value="2">Turn Off</option>
+        </sdpi-select>
+    </div>
+    <govee-setup class="hidden"></govee-setup>
+</body>
+
+</html>

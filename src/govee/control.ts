@@ -1,14 +1,12 @@
-import { Capability } from "./capability";
+import { Capability, OnOff } from "./capability";
+import { GoveeRequest, GoveeResponse } from "./common";
 import { Device } from "./device";
 
 /**
- * A request to control a Govee device.
+ * Request to control a Govee device.
  */
-export type ControlRequest = {
-	/**
-	 * Payload that contains the device to control, and the capability being changed.
-	 */
-	payload: Device & {
+export type ControlRequest = GoveeRequest<
+	Device & {
 		/**
 		 * Capability being changed.
 		 */
@@ -28,10 +26,30 @@ export type ControlRequest = {
 			 */
 			value: unknown;
 		};
-	};
+	}
+>;
 
+/**
+ * Response after sending a control request.
+ */
+export type ControlResponse<T> = GoveeResponse & {
 	/**
-	 * Unique identifier that identifies the request from a response.
+	 * Capability associated with the request.
 	 */
-	requestId: string;
+	capability: T;
+};
+
+/**
+ * Power state control.
+ */
+export type OnOffControl = OnOff & {
+	/**
+	 * State of the control request.
+	 */
+	state: {
+		/**
+		 * Status of the request.
+		 */
+		status: string;
+	};
 };

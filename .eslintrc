@@ -9,9 +9,10 @@
 		"prettier"
 	],
 	"ignorePatterns": [
-		".github/",
-		"dist/",
-		"node_modules/"
+		".github",
+		"com.geekyeggo.goveecontroller.sdPlugin",
+		"dist",
+		"node_modules"
 	],
 	"parser": "@typescript-eslint/parser",
 	"plugins": [

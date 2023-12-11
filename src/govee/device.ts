@@ -22,7 +22,7 @@ export type DeviceMetadata = Device & {
 	/**
 	 * Device capabilities.
 	 */
-	capabilities: [OnOff | unknown];
+	capabilities: OnOff[];
 
 	/**
 	 * Name of the device, as defined within the Govee Home App.

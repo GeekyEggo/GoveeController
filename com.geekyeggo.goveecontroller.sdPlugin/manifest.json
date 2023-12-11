@@ -9,6 +9,7 @@
 			"Name": "On / Off",
 			"UUID": "com.geekyeggo.goveecontroller.turnonoff",
 			"Icon": "imgs/actions/turn-on-off/action",
+			"PropertyInspectorPath": "pi/turn-on-off.html",
 			"Tooltip": "Turns a device on or off",
 			"States": [
 				{
