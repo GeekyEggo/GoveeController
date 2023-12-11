@@ -14,6 +14,21 @@ export type Brightness = {
 };
 
 /**
+ * Color of a device.
+ */
+export type Color = {
+	/**
+	 * The instance that identifies the capability.
+	 */
+	instance: "colorRgb";
+
+	/**
+	 * The type that identifies the capability.
+	 */
+	type: "devices.capabilities.color_setting";
+};
+
+/**
  * Color temperature of a device.
  */
 export type ColorTemperature = {
@@ -71,4 +86,4 @@ export type CapabilityIdentifier = Pick<Capability, "instance" | "type">;
 /**
  * A capability that defines functionality available to a Govee device.
  */
-export type Capability = Brightness | ColorTemperature | OnOff;
+export type Capability = Brightness | Color | ColorTemperature | OnOff;

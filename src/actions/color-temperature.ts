@@ -5,7 +5,7 @@ import { goveeClient } from "../govee/client";
 import { DataSourceRequest, trySendDevices } from "../ui";
 
 /**
- * Sets the color temperature of a Govee device.
+ * Sets the color temperature of a device.
  */
 @action({ UUID: "com.geekyeggo.goveecontroller.colortemperature" })
 export class ColorTemperature extends SingletonAction<ColorTemperatureSettings> {
@@ -21,7 +21,7 @@ export class ColorTemperature extends SingletonAction<ColorTemperatureSettings> 
 			// Find the device.
 			const device = (await goveeClient.getDevices()).find((d) => d.device === deviceId);
 			if (device === undefined) {
-				return ev.action.showAlert();
+				throw new Error("Device not found.");
 			}
 
 			const capability = device.capabilities.find(

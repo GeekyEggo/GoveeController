@@ -4,7 +4,7 @@ import { goveeClient } from "../govee/client";
 import { DataSourceRequest, trySendDevices } from "../ui";
 
 /**
- * Sets the power state of a Govee device.
+ * Sets the power state of a device.
  */
 @action({ UUID: "com.geekyeggo.goveecontroller.turnonoff" })
 export class TurnOnOff extends SingletonAction<TurnOnOffSettings> {
@@ -20,7 +20,7 @@ export class TurnOnOff extends SingletonAction<TurnOnOffSettings> {
 			// Find the device.
 			const device = (await goveeClient.getDevices()).find((d) => d.device === deviceId);
 			if (device === undefined) {
-				return ev.action.showAlert();
+				throw new Error("Device not found.");
 			}
 
 			// Update the power state.

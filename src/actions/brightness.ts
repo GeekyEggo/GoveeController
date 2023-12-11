@@ -4,7 +4,7 @@ import { goveeClient } from "../govee/client";
 import { DataSourceRequest, trySendDevices } from "../ui";
 
 /**
- * Sets the brightness of a Govee device.
+ * Sets the brightness of a device.
  */
 @action({ UUID: "com.geekyeggo.goveecontroller.brightness" })
 export class Brightness extends SingletonAction<BrightnessSettings> {
@@ -20,7 +20,7 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 			// Find the device.
 			const device = (await goveeClient.getDevices()).find((d) => d.device === deviceId);
 			if (device === undefined) {
-				return ev.action.showAlert();
+				throw new Error("Device not found.");
 			}
 
 			// Set the brightness.

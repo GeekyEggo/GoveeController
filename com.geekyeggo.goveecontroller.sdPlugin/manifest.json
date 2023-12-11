@@ -38,6 +38,7 @@
 			"UUID": "com.geekyeggo.goveecontroller.color",
 			"Icon": "imgs/actions/color/action",
 			"Tooltip": "Sets the color of a device",
+			"PropertyInspectorPath": "pi/color.html",
 			"States": [
 				{
 					"FontSize": "12",

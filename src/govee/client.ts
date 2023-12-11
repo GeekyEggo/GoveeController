@@ -15,6 +15,21 @@ let devicesCache: DeviceMetadata[] | undefined = undefined;
  */
 class GoveeClient {
 	/**
+	 * Converts a hexadecimal color to a color supported by Govee.
+	 * @param color Color as a hexadecimal string, for example "#ff00ff".
+	 * @returns The numerical value of the color.
+	 */
+	public getColorFromHex(color: string): number {
+		const values = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+		if (!values) {
+			throw new Error(`Invalid color ${color}`);
+		}
+
+		// Reference: https://developer.govee.com/reference/control-you-devices#color_setting
+		return ((parseInt(values[1], 16) & 0xff) << 16) | ((parseInt(values[2], 16) & 0xff) << 8) | ((parseInt(values[3], 16) & 0xff) << 0);
+	}
+
+	/**
 	 * Gets the state of a device.
 	 * @param device Device to get the state of.
 	 * @returns The device state.
@@ -63,6 +78,22 @@ class GoveeClient {
 				type: "devices.capabilities.range"
 			},
 			brightness
+		);
+	}
+
+	/**
+	 * Sets the color temperature.
+	 * @param device The device.
+	 * @param color New color.
+	 */
+	public async setColor(device: Device, color: number): Promise<void> {
+		await this.control(
+			device,
+			{
+				instance: "colorRgb",
+				type: "devices.capabilities.color_setting"
+			},
+			color
 		);
 	}
 
