@@ -15,6 +15,13 @@ let devicesCache: DeviceMetadata[] | undefined = undefined;
  */
 class GoveeClient {
 	/**
+	 * Clears the cache.
+	 */
+	public clearCache(): void {
+		devicesCache = undefined;
+	}
+
+	/**
 	 * Converts a hexadecimal color to a color supported by Govee.
 	 * @param color Color as a hexadecimal string, for example "#ff00ff".
 	 * @returns The numerical value of the color.
@@ -62,7 +69,7 @@ class GoveeClient {
 		const res = await axios.get("https://openapi.api.govee.com/router/api/v1/user/devices", { headers: await this.getHeaders() });
 		this.validate(res, "Failed to get Govee devices");
 
-		return (devicesCache ??= res.data);
+		return (devicesCache ??= Array.from(res.data.data));
 	}
 
 	/**
@@ -146,7 +153,7 @@ class GoveeClient {
 				instance: "powerSwitch",
 				type: "devices.capabilities.on_off"
 			},
-			1
+			0
 		);
 	}
 

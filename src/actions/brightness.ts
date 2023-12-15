@@ -24,7 +24,13 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 			}
 
 			// Set the brightness.
-			goveeClient.setBrightness(device, parseInt(brightness || "50"));
+			const value = parseInt(brightness === undefined ? "50" : brightness);
+			if (value === 0) {
+				goveeClient.turnOff(device);
+			} else {
+				goveeClient.setBrightness(device, value);
+			}
+
 			await ev.action.showOk();
 		} catch (e) {
 			ev.action.showAlert();

@@ -33,7 +33,8 @@ export class ColorTemperature extends SingletonAction<ColorTemperatureSettings> 
 			}
 
 			// Set the color temperature as a percentage of the range.
-			const value = (parseInt(temperature || "50") / 100) * (capability.parameters.range.max - capability.parameters.range.min) + capability.parameters.range.min;
+			const value =
+				(parseInt(temperature === undefined ? "50" : temperature) / 100) * (capability.parameters.range.max - capability.parameters.range.min) + capability.parameters.range.min;
 			goveeClient.setColorTemperature(device, value);
 
 			await ev.action.showOk();

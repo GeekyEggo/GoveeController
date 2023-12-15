@@ -1,4 +1,5 @@
 import type { Capability } from "./capability";
+import type { GoveeResponse } from "./common";
 
 /**
  * Provides identifiable information about a Govee device.
@@ -43,4 +44,14 @@ export type DeviceMetadata = Device & {
 		| "devices.types.sensor"
 		| "devices.types.socket"
 		| "devices.types.thermometer";
+};
+
+/**
+ * Response information for a collection of devices.
+ */
+export type DeviceCollectionResponse = GoveeResponse & {
+	/**
+	 * Devices associated with the account.
+	 */
+	data: DeviceMetadata[];
 };

@@ -82,7 +82,7 @@
 
 	/* Handles toggling of the desired panel. */
 	const showSettings = function (canShowSettings) {
-		const setup = document.getElementsByTagName("govee-setup")[0];
+		const setup = document.querySelectorAll("govee-setup")[0];
 		const settings = document.getElementById("settings");
 
 		const show = function (elem) {
@@ -96,7 +96,7 @@
 		if (canShowSettings) {
 			if (isDeviceCollectionDirty) {
 				console.log("refreshing");
-				document.getElementById("deviceId").refresh();
+				document.querySelectorAll("sdpi-select[setting='deviceId']")[0].refresh();
 			}
 
 			show(settings);
@@ -108,7 +108,7 @@
 	};
 
 	/* Monitor global settings changing. */
-	window.streamDeckClient.didReceiveGlobalSettings.subscribe((globalSettings) => {
+	SDPIComponents.streamDeckClient.didReceiveGlobalSettings.subscribe((globalSettings) => {
 		const apiKey = globalSettings.payload?.settings?.apiKey;
 		isDeviceCollectionDirty = apiKey != localApiKey;
 		localApiKey = apiKey;
@@ -117,5 +117,5 @@
 	});
 
 	/* Invoke a request for the global settings. */
-	window.streamDeckClient.getGlobalSettings();
+	SDPIComponents.streamDeckClient.getGlobalSettings();
 })();

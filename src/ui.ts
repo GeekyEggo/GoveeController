@@ -8,7 +8,7 @@ import { goveeClient } from "./govee/client";
  * @returns `true` when the payload is requesting the devices; otherwise `false`.
  */
 export function isRequestingDevices(ev: SendToPluginEvent<object, object>): boolean {
-	return ev.payload !== null && "event" in ev.payload && "requestId" in ev.payload && typeof ev.payload.event === "string" && typeof ev.payload.requestId == "string";
+	return ev.payload !== null && "event" in ev.payload && typeof ev.payload.event === "string" && ev.payload.event === "getDevices";
 }
 
 /**
@@ -22,11 +22,14 @@ export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, ob
 	}
 
 	try {
+		if (ev.payload.isRefresh) {
+			goveeClient.clearCache();
+		}
+
 		const devices = await goveeClient.getDevices();
 		ev.action.sendToPropertyInspector({
 			event: ev.payload.event,
-			requestId: ev.payload.requestId,
-			data: devices
+			items: devices
 				.filter((d) => d.capabilities.findIndex((c) => c.instance === capability.instance && c.type === capability.type) >= 0)
 				.sort((a, b) => a.deviceName.localeCompare(b.deviceName))
 				.map((device) => {
@@ -42,41 +45,66 @@ export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, ob
 }
 
 /**
- * Represents a data source request sent from the property inspector.
+ * Request from the UI for a data source.
  */
 export type DataSourceRequest = {
 	/**
-	 * Event that identifies the type of data to load.
+	 * Event identifying the data source.
 	 */
 	event: string;
 
 	/**
-	 * Request identifier.
+	 * Whether a refresh data source is being requested.
 	 */
-	requestId: string;
+	isRefresh?: true;
 };
 
 /**
- * Provides the data source to the property inspector.
+ * Response to the UI with the data source information.
  */
-type DataSourceResponse = DataSourceRequest & {
+type DataSourceResponse = {
 	/**
-	 * The items.
+	 * Event identifying the data source.
 	 */
-	data: {
-		/**
-		 * Whether the item is disabled.
-		 */
-		disabled?: boolean;
+	event: string;
 
-		/**
-		 * Label shown to the user.
-		 */
-		label?: string;
+	/**
+	 * Data source items.
+	 */
+	items: (Item | ItemGroup)[];
+};
 
-		/**
-		 * Value associated with the item, for example the device identifier.
-		 */
-		value: string;
-	}[];
+/**
+ * Data source item.
+ */
+type Item = {
+	/**
+	 * Whether the item is disabled.
+	 */
+	disabled?: boolean;
+
+	/**
+	 * Label shown to the user.
+	 */
+	label?: string;
+
+	/**
+	 * Value of the item that will be persisted.
+	 */
+	value: string;
+};
+
+/**
+ * Data source item group.
+ */
+type ItemGroup = {
+	/**
+	 * Label shown to the user.
+	 */
+	label?: string;
+
+	/**
+	 * Child items.
+	 */
+	children: Item[];
 };
