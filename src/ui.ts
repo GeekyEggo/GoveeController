@@ -62,7 +62,7 @@ export type DataSourceRequest = {
 /**
  * Response to the UI with the data source information.
  */
-type DataSourceResponse = {
+export type DataSourceResponse = {
 	/**
 	 * Event identifying the data source.
 	 */

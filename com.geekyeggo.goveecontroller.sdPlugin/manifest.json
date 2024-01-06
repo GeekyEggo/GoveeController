@@ -13,22 +13,8 @@
 			"Tooltip": "Turns a device on or off",
 			"States": [
 				{
-					"FontSize": "12",
+					"FontSize": 12,
 					"Image": "imgs/actions/turn-on-off/key",
-					"TitleAlignment": "bottom"
-				}
-			]
-		},
-		{
-			"Name": "Brightness",
-			"UUID": "com.geekyeggo.goveecontroller.brightness",
-			"Icon": "imgs/actions/brightness/action",
-			"Tooltip": "Sets the brightness of a device",
-			"PropertyInspectorPath": "pi/brightness.html",
-			"States": [
-				{
-					"FontSize": "12",
-					"Image": "imgs/actions/brightness/key",
 					"TitleAlignment": "bottom"
 				}
 			]
@@ -41,21 +27,49 @@
 			"PropertyInspectorPath": "pi/color.html",
 			"States": [
 				{
-					"FontSize": "12",
+					"FontSize": 12,
 					"Image": "imgs/actions/color/key",
 					"TitleAlignment": "bottom"
 				}
 			]
 		},
 		{
-			"Name": "Color Temperature",
+			"Name": "Scene",
+			"UUID": "com.geekyeggo.goveecontroller.light-scene",
+			"Icon": "imgs/actions/light-scene/action",
+			"PropertyInspectorPath": "pi/light-scene.html",
+			"Tooltip": "Sets the scene of a device",
+			"States": [
+				{
+					"FontSize": 12,
+					"Image": "imgs/actions/light-scene/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Brightness",
+			"UUID": "com.geekyeggo.goveecontroller.brightness",
+			"Icon": "imgs/actions/brightness/action",
+			"Tooltip": "Sets the brightness of a device",
+			"PropertyInspectorPath": "pi/brightness.html",
+			"States": [
+				{
+					"FontSize": 12,
+					"Image": "imgs/actions/brightness/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Warm / Cool",
 			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
 			"Icon": "imgs/actions/color-temperature/Action",
 			"Tooltip": "Sets the color temperature of a device",
 			"PropertyInspectorPath": "pi/color-temperature.html",
 			"States": [
 				{
-					"FontSize": "12",
+					"FontSize": 12,
 					"Image": "imgs/actions/color-temperature/Key",
 					"TitleAlignment": "bottom"
 				}

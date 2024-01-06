@@ -1,47 +1,17 @@
 /**
- * Brightness of a device.
+ * Brightness of the device.
  */
-export type Brightness = {
-	/**
-	 * The instance that identifies the capability.
-	 */
-	instance: "brightness";
-
-	/**
-	 * The type that identifies the capability.
-	 */
-	type: "devices.capabilities.range";
-};
+export type Brightness = CapabilityBase<"brightness", "devices.capabilities.range">;
 
 /**
- * Color of a device.
+ * Color of the device.
  */
-export type Color = {
-	/**
-	 * The instance that identifies the capability.
-	 */
-	instance: "colorRgb";
-
-	/**
-	 * The type that identifies the capability.
-	 */
-	type: "devices.capabilities.color_setting";
-};
+export type Color = CapabilityBase<"colorRgb", "devices.capabilities.color_setting">;
 
 /**
- * Color temperature of a device.
+ * Color temperature of the device.
  */
-export type ColorTemperature = {
-	/**
-	 * The instance that identifies the capability.
-	 */
-	instance: "colorTemperatureK";
-
-	/**
-	 * The type that identifies the capability.
-	 */
-	type: "devices.capabilities.color_setting";
-
+export type ColorTemperature = CapabilityBase<"colorTemperatureK", "devices.capabilities.color_setting"> & {
 	/**
 	 * Parameters associated with the capability.
 	 */
@@ -64,26 +34,66 @@ export type ColorTemperature = {
 };
 
 /**
- * Power state of a device.
+ * Light scene of a the device.
  */
-export type OnOff = {
+export type LightScene = CapabilityBase<"lightScene", "devices.capabilities.dynamic_scene"> & {
+	/**
+	 * Parameters associated with the capability.
+	 */
+	parameters: {
+		/**
+		 * Available light scenes.
+		 */
+		options: {
+			/**
+			 * Name of the light scene.
+			 */
+			name: string;
+
+			/**
+			 * Identifiers of the parameter.
+			 */
+			value: {
+				/**
+				 * Unique identifier.
+				 */
+				id: number;
+			};
+		}[];
+	};
+};
+
+/**
+ * Power state of the device.
+ */
+export type OnOff = CapabilityBase<"powerSwitch", "devices.capabilities.on_off">;
+
+/**
+ * Base structure for all capability.
+ */
+type CapabilityBase<I extends string, T extends string> = {
 	/**
 	 * The instance that identifies the capability.
 	 */
-	instance: "powerSwitch";
+	instance: I;
 
 	/**
 	 * The type that identifies the capability.
 	 */
-	type: "devices.capabilities.on_off";
+	type: T;
 };
 
 /**
  * Identifies a capability.
  */
-export type CapabilityIdentifier = Pick<Capability, "instance" | "type">;
+export type CapabilityIdentifier = ReduceIdentifiers<Capability>;
+
+/**
+ * Reduces {@template T} to the {@link CapabilityBase}, representing the {@link Capability} as identifiers.
+ */
+type ReduceIdentifiers<T> = T extends CapabilityBase<infer I, infer U> ? CapabilityBase<I, U> : never;
 
 /**
  * A capability that defines functionality available to a Govee device.
  */
-export type Capability = Brightness | Color | ColorTemperature | OnOff;
+export type Capability = Brightness | Color | ColorTemperature | LightScene | OnOff;

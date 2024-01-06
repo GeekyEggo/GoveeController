@@ -16,7 +16,19 @@ export type GoveeRequest<T> = {
 /**
  * Response from Govee.
  */
-export type GoveeResponse = {
+export type GoveeResponse<T = void> = T extends void
+	? GoveeResponseBase
+	: GoveeResponseBase & {
+			/**
+			 * Payload data.
+			 */
+			payload: T;
+	  };
+
+/**
+ * Response from Govee.
+ */
+export type GoveeResponseBase = {
 	/**
 	 * State code of the Response.
 	 */

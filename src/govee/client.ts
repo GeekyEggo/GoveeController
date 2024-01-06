@@ -2,7 +2,7 @@ import streamDeck from "@elgato/streamdeck";
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import crypto from "node:crypto";
 import type { GlobalSettings } from "../global-settings";
-import type { CapabilityIdentifier } from "./capability";
+import type { CapabilityIdentifier, LightScene } from "./capability";
 import type { GoveeResponse } from "./common";
 import type { ControlRequest, ControlResponse } from "./control";
 import type { Device, DeviceMetadata } from "./device";
@@ -37,6 +37,20 @@ class GoveeClient {
 	}
 
 	/**
+	 * Gets the device.
+	 * @param deviceId Device identifier.
+	 * @returns The device.
+	 */
+	public async getDevice(deviceId: string): Promise<DeviceMetadata | undefined> {
+		if (deviceId === undefined) {
+			return undefined;
+		}
+
+		const devices = await this.getDevices();
+		return devices.find(({ device }) => device === deviceId);
+	}
+
+	/**
 	 * Gets the state of a device.
 	 * @param device Device to get the state of.
 	 * @returns The device state.
@@ -67,9 +81,39 @@ class GoveeClient {
 		}
 
 		const res = await axios.get("https://openapi.api.govee.com/router/api/v1/user/devices", { headers: await this.getHeaders() });
-		this.validate(res, "Failed to get Govee devices");
+		this.validate(res, "Failed to get Govee devices.");
 
 		return (devicesCache ??= Array.from(res.data.data));
+	}
+
+	/**
+	 * Gets the light scenes for a device.
+	 * @param deviceId Device identifier.
+	 * @returns Available light scenes.
+	 */
+	public async getLightScenes(deviceId: string): Promise<LightScene["parameters"]["options"]> {
+		const device = await this.getDevice(deviceId);
+		if (device === undefined) {
+			throw new Error("Device not found.");
+		}
+
+		const res = await axios.post<GoveeResponse<DeviceMetadata>>(
+			"https://openapi.api.govee.com/router/api/v1/device/scenes",
+			{
+				payload: device,
+				requestId: crypto.randomUUID()
+			},
+			{ headers: await this.getHeaders() }
+		);
+
+		this.validate(res, "Failed to get light scenes.");
+		const [capability] = res.data.payload.capabilities;
+
+		if (capability?.instance === "lightScene" && capability.type === "devices.capabilities.dynamic_scene") {
+			return capability.parameters.options;
+		}
+
+		throw new Error("Device does not support light scenes");
 	}
 
 	/**
@@ -105,7 +149,7 @@ class GoveeClient {
 	}
 
 	/**
-	 * Sets teh color temperature.
+	 * Sets the color temperature.
 	 * @param device The device.
 	 * @param temperature New color temperature.
 	 */
@@ -117,6 +161,27 @@ class GoveeClient {
 				type: "devices.capabilities.color_setting"
 			},
 			temperature
+		);
+	}
+
+	/**
+	 * Sets the light scene for the specified device.
+	 * @param deviceId Device identifier.
+	 * @param sceneId Scene identifier.
+	 */
+	public async setLightScene(deviceId: string, sceneId: number): Promise<void> {
+		const device = await this.getDevice(deviceId);
+		if (device === undefined) {
+			throw new Error("Device not found.");
+		}
+
+		await this.control(
+			device,
+			{
+				instance: "lightScene",
+				type: "devices.capabilities.dynamic_scene"
+			},
+			sceneId
 		);
 	}
 
