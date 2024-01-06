@@ -38,11 +38,25 @@
 			"UUID": "com.geekyeggo.goveecontroller.light-scene",
 			"Icon": "imgs/actions/light-scene/action",
 			"PropertyInspectorPath": "pi/light-scene.html",
-			"Tooltip": "Sets the scene of a device",
+			"Tooltip": "Sets the light scene of a device",
 			"States": [
 				{
 					"FontSize": 12,
 					"Image": "imgs/actions/light-scene/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "DIY",
+			"UUID": "com.geekyeggo.goveecontroller.diy-scene",
+			"Icon": "imgs/actions/diy-scene/action",
+			"PropertyInspectorPath": "pi/diy-scene.html",
+			"Tooltip": "Sets the DIY scene of a device",
+			"States": [
+				{
+					"FontSize": 12,
+					"Image": "imgs/actions/diy-scene/key",
 					"TitleAlignment": "bottom"
 				}
 			]

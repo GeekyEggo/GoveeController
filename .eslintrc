@@ -22,13 +22,6 @@
 	],
 	"root": true,
 	"rules": {
-		"indent": [
-			"warn",
-			"tab",
-			{
-				"SwitchCase": 1
-			}
-		],
 		"jsdoc/no-undefined-types": 1,
 		"jsdoc/require-jsdoc": [
 			"warn",

@@ -2,7 +2,7 @@ import streamDeck from "@elgato/streamdeck";
 import axios, { AxiosResponse, RawAxiosRequestHeaders } from "axios";
 import crypto from "node:crypto";
 import type { GlobalSettings } from "../global-settings";
-import type { CapabilityIdentifier, LightScene } from "./capability";
+import type { CapabilityIdentifier, DIYScene, LightScene } from "./capability";
 import type { GoveeResponse } from "./common";
 import type { ControlRequest, ControlResponse } from "./control";
 import type { Device, DeviceMetadata } from "./device";
@@ -37,17 +37,42 @@ class GoveeClient {
 	}
 
 	/**
-	 * Gets the device.
-	 * @param deviceId Device identifier.
-	 * @returns The device.
+	 * Gets the DIY scenes for a device.
+	 * @param device The device.
+	 * @returns Available DIY scenes.
 	 */
-	public async getDevice(deviceId: string): Promise<DeviceMetadata | undefined> {
-		if (deviceId === undefined) {
-			return undefined;
+	public async getDIYScenes(device: Device): Promise<DIYScene["parameters"]["options"]> {
+		const res = await axios.post<GoveeResponse<DeviceMetadata>>(
+			"https://openapi.api.govee.com/router/api/v1/device/diy-scenes",
+			{
+				payload: device,
+				requestId: crypto.randomUUID()
+			},
+			{ headers: await this.getHeaders() }
+		);
+
+		this.validate(res, "Failed to get light scenes.");
+		const [capability] = res.data.payload.capabilities;
+
+		if (capability?.instance === "diyScene" && capability.type === "devices.capabilities.dynamic_scene") {
+			return capability.parameters.options;
 		}
 
-		const devices = await this.getDevices();
-		return devices.find(({ device }) => device === deviceId);
+		throw new Error("Device does not support DIY scenes");
+	}
+
+	/**
+	 * Gets the device associated with the {@link deviceId}.
+	 * @param deviceId Device identifier.
+	 * @returns The device; otherwise an error is thrown.
+	 */
+	public async getDeviceOrThrow(deviceId: string): Promise<DeviceMetadata> | never {
+		const device = (await this.getDevices()).find(({ device }) => device === deviceId);
+		if (device !== undefined) {
+			return device;
+		}
+
+		throw new Error("Device not found.");
 	}
 
 	/**
@@ -88,15 +113,10 @@ class GoveeClient {
 
 	/**
 	 * Gets the light scenes for a device.
-	 * @param deviceId Device identifier.
+	 * @param device The device.
 	 * @returns Available light scenes.
 	 */
-	public async getLightScenes(deviceId: string): Promise<LightScene["parameters"]["options"]> {
-		const device = await this.getDevice(deviceId);
-		if (device === undefined) {
-			throw new Error("Device not found.");
-		}
-
+	public async getLightScenes(device: Device): Promise<LightScene["parameters"]["options"]> {
 		const res = await axios.post<GoveeResponse<DeviceMetadata>>(
 			"https://openapi.api.govee.com/router/api/v1/device/scenes",
 			{
@@ -165,16 +185,27 @@ class GoveeClient {
 	}
 
 	/**
-	 * Sets the light scene for the specified device.
-	 * @param deviceId Device identifier.
+	 * Sets the DIY scene for the specified device.
+	 * @param device The device.
 	 * @param sceneId Scene identifier.
 	 */
-	public async setLightScene(deviceId: string, sceneId: number): Promise<void> {
-		const device = await this.getDevice(deviceId);
-		if (device === undefined) {
-			throw new Error("Device not found.");
-		}
+	public async setDIYScene(device: Device, sceneId: number): Promise<void> {
+		await this.control(
+			device,
+			{
+				instance: "diyScene",
+				type: "devices.capabilities.dynamic_scene"
+			},
+			sceneId
+		);
+	}
 
+	/**
+	 * Sets the light scene for the specified device.
+	 * @param device The device.
+	 * @param sceneId Scene identifier.
+	 */
+	public async setLightScene(device: Device, sceneId: number): Promise<void> {
 		await this.control(
 			device,
 			{
