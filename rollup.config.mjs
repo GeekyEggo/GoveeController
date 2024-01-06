@@ -7,6 +7,7 @@ import path from "node:path";
 import url from "node:url";
 
 const isWatching = !!process.env.ROLLUP_WATCH;
+const sdPlugin = "com.geekyeggo.goveecontroller.sdPlugin";
 
 /**
  * @type {import('rollup').RollupOptions}
@@ -14,13 +15,19 @@ const isWatching = !!process.env.ROLLUP_WATCH;
 const config = {
 	input: "src/plugin.ts",
 	output: {
-		file: "com.geekyeggo.goveecontroller.sdPlugin/bin/plugin.js",
+		file: `${sdPlugin}/bin/plugin.js`,
 		sourcemap: isWatching,
 		sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
 			return url.pathToFileURL(path.resolve(path.dirname(sourcemapPath), relativeSourcePath)).href;
 		}
 	},
 	plugins: [
+		{
+			name: "watch-externals",
+			buildStart: function () {
+				this.addWatchFile(`${sdPlugin}/manifest.json`);
+			}
+		},
 		typescript({
 			mapRoot: isWatching ? "./" : undefined
 		}),
