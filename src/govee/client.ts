@@ -137,6 +137,22 @@ class GoveeClient {
 	}
 
 	/**
+	 * Gets the current power state of the specified {@link device}.
+	 * @param device Thd device.
+	 * @returns Power state.
+	 */
+	public async getPowerState(device: Device): Promise<number> {
+		const res = await this.getDeviceState(device);
+		const capability = res.data.payload.capabilities.find((c) => c.instance === "powerSwitch" && c.type === "devices.capabilities.on_off" && c.state !== undefined);
+
+		if (capability === undefined) {
+			throw new Error("Device does not support switching power state");
+		}
+
+		return capability.state.value;
+	}
+
+	/**
 	 * Sets the device brightness.
 	 * @param device The device.
 	 * @param brightness New brightness.
@@ -221,20 +237,13 @@ class GoveeClient {
 	 * @param device Device to whose power state will be updated.
 	 */
 	public async togglePowerState(device: Device): Promise<void> {
-		const res = await this.getDeviceState(device);
-		const capability = res.data.payload.capabilities.find((c) => c.instance === "powerSwitch" && c.type === "devices.capabilities.on_off" && c.state !== undefined);
-
-		if (capability === undefined) {
-			throw new Error("Device does not support switching power state");
-		}
-
 		await this.control(
 			device,
 			{
 				instance: "powerSwitch",
 				type: "devices.capabilities.on_off"
 			},
-			1 - capability.state.value
+			1 - (await this.getPowerState(device))
 		);
 	}
 

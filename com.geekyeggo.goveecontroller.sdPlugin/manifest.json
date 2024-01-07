@@ -73,7 +73,16 @@
 					"Image": "imgs/actions/brightness/key",
 					"TitleAlignment": "bottom"
 				}
-			]
+			],
+			"Controllers": ["Keypad", "Encoder"],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Push": "Set brightness",
+					"Rotate": "Adjust",
+					"Touch": "On / Off"
+				}
+			}
 		},
 		{
 			"Name": "Warm / Cool",

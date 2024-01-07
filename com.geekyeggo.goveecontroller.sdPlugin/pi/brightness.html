@@ -6,6 +6,14 @@
 	<title>Govee Controller | Brightness</title>
 
 	<link rel="stylesheet" href="css/main.css" />
+	<script>
+		function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
+			const { payload: { controller } } = JSON.parse(inActionInfo);
+			if (controller === "Encoder") {
+				document.querySelector("sdpi-item[label='Brightness']").classList.add("hidden");
+			}
+		}
+	</script>
 	<script src="js/sdpi-components.js"></script>
 	<script src="js/govee-setup.js"></script>
 </head>
@@ -23,6 +31,7 @@
 	</div>
 
 	<govee-setup class="hidden"></govee-setup>
+
 </body>
 
 </html>
