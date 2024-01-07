@@ -9,6 +9,7 @@ import type { Device, DeviceMetadata } from "./device";
 import type { StateRequest, StateResponse } from "./state";
 
 let devicesCache: DeviceMetadata[] | undefined = undefined;
+let apiKey: string | undefined;
 
 /**
  * Provides a client capable of interacting with the Govee API.
@@ -311,7 +312,11 @@ class GoveeClient {
 	 * @returns The headers.
 	 */
 	private async getHeaders(): Promise<RawAxiosRequestHeaders> {
-		const { apiKey } = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
+		apiKey ??= (await streamDeck.settings.getGlobalSettings<GlobalSettings>()).apiKey;
+		if (apiKey === undefined) {
+			throw new Error("Govee API key has not been set.");
+		}
+
 		return {
 			"Content-Type": "application/json",
 			"Govee-API-Key": apiKey

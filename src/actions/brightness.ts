@@ -1,9 +1,14 @@
-import streamDeck, { Action, action, DialDownEvent, DialRotateEvent, KeyDownEvent, SendToPluginEvent, SingletonAction, TouchTapEvent, WillAppearEvent } from "@elgato/streamdeck";
+import streamDeck, { Action, action, DialRotateEvent, DidReceiveSettingsEvent, KeyDownEvent, SendToPluginEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
 
-import { clearDialTimeout, dialTimeout } from "../dial-timeout";
+import { clearDebounce, debounce } from "../debounce";
 import { goveeClient } from "../govee/client";
 import { clamp } from "../math";
 import { DataSourceRequest, trySendDevices } from "../ui";
+
+/**
+ * Default brightness.
+ */
+const defaultBrightness = 25;
 
 /**
  * Sets the brightness of a device.
@@ -11,30 +16,27 @@ import { DataSourceRequest, trySendDevices } from "../ui";
 @action({ UUID: "com.geekyeggo.goveecontroller.brightness" })
 export class Brightness extends SingletonAction<BrightnessSettings> {
 	/**
-	 * Sets the brightness based on the current dial value.
-	 * @param param0 Event arguments.
-	 * @param param0.action Action that triggered the event.
-	 * @param param0.payload Payload information.
-	 * @param param0.payload.settings Settings associated with the action.
+	 * Initializes a new instance of the {@link Brightness} class.
 	 */
-	public async onDialDown({ action, payload: { settings } }: DialDownEvent<BrightnessSettings>): Promise<void> {
-		if (settings.brightness !== undefined) {
-			await this.setBrightness(action, settings.deviceId, settings.brightness);
-			clearDialTimeout(action.id);
-		}
+	constructor() {
+		super();
+
+		this.onDialDown = (ev): Promise<void> => this.togglePowerState(ev.action, ev.payload.settings);
+		this.onTouchTap = (ev): Promise<void> => this.togglePowerState(ev.action, ev.payload.settings);
 	}
 
 	/**
-	 * Sets desired brightness of the device, but does not change it's brightness until {@link Brightness.onDialDown}.
-	 * @param param0 Event arguments.
-	 * @param param0.action Action that triggered the event.
-	 * @param param0.payload Payload information.
-	 * @param param0.payload.settings Settings associated with the action.
-	 * @param param0.payload.ticks Number of rotations.
+	 * Increases or decreases the preferred brightness; when the device is on, the brightness of the device is set.
+	 * @param ev Event arguments
 	 */
-	public async onDialRotate({ action, payload: { settings, ticks } }: DialRotateEvent<BrightnessSettings>): Promise<void> {
-		settings.brightness = clamp((settings.brightness ?? 50) + ticks * 5, 0, 100);
+	public async onDialRotate(ev: DialRotateEvent<BrightnessSettings>): Promise<void> {
+		const {
+			action,
+			payload: { settings, ticks }
+		} = ev;
 
+		// Determine the new brightness, persist it, and set the feedback.
+		settings.brightness = clamp((settings.brightness ?? defaultBrightness) + ticks * 5, 5, 100);
 		await action.setSettings(settings);
 		await action.setFeedback({
 			value: {
@@ -47,12 +49,20 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 			}
 		});
 
-		dialTimeout(action.id, () =>
-			action.setFeedback({
-				value: { opacity: 0.2 },
-				indicator: { opacity: 0.2 }
-			})
-		);
+		// Debounce the chance to prevent throttling.
+		const { deviceId, brightness } = settings;
+		debounce(action.id, () => {
+			this.setFeedback(action, settings, 0.2);
+			this.setBrightness(action, deviceId, brightness, false);
+		});
+	}
+
+	/**
+	 * Updates the feedback to show the name of the device.
+	 * @param ev Event arguments.
+	 */
+	public onDidReceiveSettings(ev: DidReceiveSettingsEvent<BrightnessSettings>): void {
+		ev.action.setTitle(ev.payload.settings.deviceName ?? "Brightness");
 	}
 
 	/**
@@ -60,8 +70,7 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 	 * @param ev Event arguments.
 	 */
 	public async onKeyDown(ev: KeyDownEvent<BrightnessSettings>): Promise<void> {
-		const { deviceId, brightness } = ev.payload.settings;
-		this.setBrightness(ev.action, deviceId, brightness || 50);
+		this.setBrightness(ev.action, ev.payload.settings.deviceId, ev.payload.settings.brightness ?? defaultBrightness);
 	}
 
 	/**
@@ -73,35 +82,6 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 			instance: "brightness",
 			type: "devices.capabilities.range"
 		});
-	}
-
-	/**
-	 * Handles the touch tap event. When the device is turned off, it is turned on based on the dial's current value; otherwise the device is turned off.
-	 * @param ev Event arguments.
-	 */
-	public async onTouchTap(ev: TouchTapEvent<BrightnessSettings>): Promise<void> {
-		try {
-			// Ensure we have device information.
-			if (ev.payload.settings.deviceId === undefined) {
-				throw new Error("No device selected.");
-			}
-
-			// Get the device, and it's current power state
-			const device = await goveeClient.getDeviceOrThrow(ev.payload.settings.deviceId);
-			const powerState = await goveeClient.getPowerState(device);
-
-			// When on, turn off; otherwise attempt to set the brightness of the device based on the dials value.
-			if (powerState === 1) {
-				await goveeClient.turnOff(device);
-			} else {
-				await goveeClient.setBrightness(device, ev.payload.settings.brightness ?? 50);
-			}
-
-			clearDialTimeout(ev.action.id);
-		} catch (e) {
-			ev.action.showAlert();
-			streamDeck.logger.error("Failed to toggle power state of device.", e);
-		}
 	}
 
 	/**
@@ -117,16 +97,7 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 
 		// When the action is an encoder, set the layout.
 		if (ev.payload.controller === "Encoder") {
-			await ev.action.setFeedback({
-				value: {
-					opacity: 0.2,
-					value: `${ev.payload.settings.brightness ?? 50}%`
-				},
-				indicator: {
-					opacity: 0.2,
-					value: ev.payload.settings.brightness ?? 50
-				}
-			});
+			await this.setFeedback(ev.action, ev.payload.settings, 0.2);
 		}
 	}
 
@@ -135,8 +106,9 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 	 * @param action Action that triggered the setting.
 	 * @param deviceId Govee device identifier.
 	 * @param brightness Desired brightness.
+	 * @param turnOn Determines whether the light can be turned on if the power state is off.
 	 */
-	private async setBrightness(action: Action, deviceId: string | undefined, brightness: number): Promise<void> {
+	private async setBrightness(action: Action, deviceId: string | undefined, brightness: number, turnOn = true): Promise<void> {
 		try {
 			// Ensure we have device information.
 			if (deviceId === undefined) {
@@ -149,6 +121,10 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 			if (brightness === 0) {
 				goveeClient.turnOff(device);
 			} else {
+				if (!turnOn && (await goveeClient.getPowerState(device)) === 0) {
+					return;
+				}
+
 				goveeClient.setBrightness(device, brightness);
 			}
 
@@ -156,6 +132,54 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 		} catch (e) {
 			action.showAlert();
 			streamDeck.logger.error("Failed to set brightness of device.", e);
+		}
+	}
+
+	/**
+	 * Sets the visual feedback of the touchscreen.
+	 * @param action Action whose feedback will be set.
+	 * @param settings Brightness settings.
+	 * @param opacity Opacity of the feedback.
+	 */
+	private async setFeedback(action: Action, settings: BrightnessSettings, opacity: 0.2 | 1): Promise<void> {
+		const brightness = settings.brightness ?? defaultBrightness;
+		await action.setFeedback({
+			value: {
+				opacity,
+				value: `${brightness}%`
+			},
+			indicator: {
+				opacity,
+				value: brightness
+			},
+			title: settings.deviceName ?? "Brightness"
+		});
+	}
+
+	/**
+	 * Toggles the power state of the specified device specified in the {@param deviceId}.
+	 * @param action Action associated with the device.
+	 * @param settings Brightness settings.
+	 */
+	private async togglePowerState(action: Action, settings: BrightnessSettings): Promise<void> {
+		try {
+			clearDebounce(action.id);
+
+			// Ensure we have device information.
+			if (settings.deviceId === undefined) {
+				throw new Error("No device selected.");
+			}
+
+			// Get the device, and toggle the power state
+			const device = await goveeClient.getDeviceOrThrow(settings.deviceId);
+			if ((await goveeClient.getPowerState(device)) === 0) {
+				await goveeClient.setBrightness(device, settings.brightness ?? defaultBrightness);
+			} else {
+				await goveeClient.turnOff(device);
+			}
+		} catch (e) {
+			action.showAlert();
+			streamDeck.logger.error("Failed to toggle power state of device.", e);
 		}
 	}
 }
@@ -173,4 +197,9 @@ type BrightnessSettings = {
 	 * The device identifier.
 	 */
 	deviceId?: string;
+
+	/**
+	 * The device name.
+	 */
+	deviceName?: string;
 };

@@ -13,11 +13,31 @@
 			"Tooltip": "Turns a device on or off",
 			"States": [
 				{
-					"FontSize": 12,
 					"Image": "imgs/actions/turn-on-off/key",
 					"TitleAlignment": "bottom"
 				}
 			]
+		},
+		{
+			"Name": "Brightness",
+			"UUID": "com.geekyeggo.goveecontroller.brightness",
+			"Icon": "imgs/actions/brightness/action",
+			"Tooltip": "Sets the brightness of a device",
+			"PropertyInspectorPath": "pi/brightness.html",
+			"States": [
+				{
+					"Image": "imgs/actions/brightness/key",
+					"TitleAlignment": "bottom"
+				}
+			],
+			"Controllers": ["Keypad", "Encoder"],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Touch": "Turn on / off",
+					"Rotate": "Set brightness"
+				}
+			}
 		},
 		{
 			"Name": "Color",
@@ -27,7 +47,6 @@
 			"PropertyInspectorPath": "pi/color.html",
 			"States": [
 				{
-					"FontSize": 12,
 					"Image": "imgs/actions/color/key",
 					"TitleAlignment": "bottom"
 				}
@@ -41,7 +60,6 @@
 			"Tooltip": "Sets the light scene of a device",
 			"States": [
 				{
-					"FontSize": 12,
 					"Image": "imgs/actions/light-scene/key",
 					"TitleAlignment": "bottom"
 				}
@@ -55,34 +73,10 @@
 			"Tooltip": "Sets the DIY scene of a device",
 			"States": [
 				{
-					"FontSize": 12,
 					"Image": "imgs/actions/diy-scene/key",
 					"TitleAlignment": "bottom"
 				}
 			]
-		},
-		{
-			"Name": "Brightness",
-			"UUID": "com.geekyeggo.goveecontroller.brightness",
-			"Icon": "imgs/actions/brightness/action",
-			"Tooltip": "Sets the brightness of a device",
-			"PropertyInspectorPath": "pi/brightness.html",
-			"States": [
-				{
-					"FontSize": 12,
-					"Image": "imgs/actions/brightness/key",
-					"TitleAlignment": "bottom"
-				}
-			],
-			"Controllers": ["Keypad", "Encoder"],
-			"Encoder": {
-				"layout": "$B1",
-				"TriggerDescription": {
-					"Push": "Set brightness",
-					"Rotate": "Adjust",
-					"Touch": "On / Off"
-				}
-			}
 		},
 		{
 			"Name": "Warm / Cool",
@@ -92,7 +86,6 @@
 			"PropertyInspectorPath": "pi/color-temperature.html",
 			"States": [
 				{
-					"FontSize": 12,
 					"Image": "imgs/actions/color-temperature/Key",
 					"TitleAlignment": "bottom"
 				}

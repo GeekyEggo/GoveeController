@@ -10,7 +10,7 @@
 		function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
 			const { payload: { controller } } = JSON.parse(inActionInfo);
 			if (controller === "Encoder") {
-				document.querySelector("sdpi-item[label='Brightness']").classList.add("hidden");
+				document.querySelector("sdpi-item[label='Brightness']").remove();
 			}
 		}
 	</script>
