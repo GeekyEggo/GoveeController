@@ -1,7 +1,7 @@
 {
 	"$schema": "../node_modules/@elgato/streamdeck/schemas/manifest.json",
 	"Name": "Govee Controller",
-	"Version": "2.0.0",
+	"Version": "2.0.0.1",
 	"Author": "GeekyEggo",
 	"URL": "https://github.com/GeekyEggo/GoveeController",
 	"Actions": [
