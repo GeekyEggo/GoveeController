@@ -53,6 +53,19 @@
 			]
 		},
 		{
+			"Name": "Color Temperature",
+			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
+			"Icon": "imgs/actions/color-temperature/Action",
+			"Tooltip": "Sets the color temperature of a device",
+			"PropertyInspectorPath": "pi/color-temperature.html",
+			"States": [
+				{
+					"Image": "imgs/actions/color-temperature/Key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
 			"Name": "Scene",
 			"UUID": "com.geekyeggo.goveecontroller.light-scene",
 			"Icon": "imgs/actions/light-scene/action",
@@ -74,19 +87,6 @@
 			"States": [
 				{
 					"Image": "imgs/actions/diy-scene/key",
-					"TitleAlignment": "bottom"
-				}
-			]
-		},
-		{
-			"Name": "Warm / Cool",
-			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
-			"Icon": "imgs/actions/color-temperature/Action",
-			"Tooltip": "Sets the color temperature of a device",
-			"PropertyInspectorPath": "pi/color-temperature.html",
-			"States": [
-				{
-					"Image": "imgs/actions/color-temperature/Key",
 					"TitleAlignment": "bottom"
 				}
 			]
