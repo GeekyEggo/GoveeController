@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
 	class GoveeSetup extends HTMLElement {
 		/**
 		 * Sets the disabled state of the child elements.
