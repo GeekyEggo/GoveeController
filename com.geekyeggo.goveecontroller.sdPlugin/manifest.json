@@ -10,7 +10,7 @@
 			"Name": "On / Off",
 			"UUID": "com.geekyeggo.goveecontroller.turnonoff",
 			"Icon": "imgs/actions/turn-on-off/action",
-			"PropertyInspectorPath": "pi/turn-on-off.html",
+			"PropertyInspectorPath": "ui/turn-on-off.html",
 			"Tooltip": "Turns a device on or off",
 			"States": [
 				{
@@ -24,7 +24,7 @@
 			"UUID": "com.geekyeggo.goveecontroller.brightness",
 			"Icon": "imgs/actions/brightness/action",
 			"Tooltip": "Sets the brightness of a device",
-			"PropertyInspectorPath": "pi/brightness.html",
+			"PropertyInspectorPath": "ui/brightness.html",
 			"States": [
 				{
 					"Image": "imgs/actions/brightness/key",
@@ -45,7 +45,7 @@
 			"UUID": "com.geekyeggo.goveecontroller.color",
 			"Icon": "imgs/actions/color/action",
 			"Tooltip": "Sets the color of a device",
-			"PropertyInspectorPath": "pi/color.html",
+			"PropertyInspectorPath": "ui/color.html",
 			"States": [
 				{
 					"Image": "imgs/actions/color/key",
@@ -58,7 +58,7 @@
 			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
 			"Icon": "imgs/actions/color-temperature/Action",
 			"Tooltip": "Sets the color temperature of a device",
-			"PropertyInspectorPath": "pi/color-temperature.html",
+			"PropertyInspectorPath": "ui/color-temperature.html",
 			"States": [
 				{
 					"Image": "imgs/actions/color-temperature/Key",
@@ -70,7 +70,7 @@
 			"Name": "Scene",
 			"UUID": "com.geekyeggo.goveecontroller.light-scene",
 			"Icon": "imgs/actions/light-scene/action",
-			"PropertyInspectorPath": "pi/light-scene.html",
+			"PropertyInspectorPath": "ui/light-scene.html",
 			"Tooltip": "Sets the light scene of a device",
 			"States": [
 				{
@@ -83,7 +83,7 @@
 			"Name": "DIY",
 			"UUID": "com.geekyeggo.goveecontroller.diy-scene",
 			"Icon": "imgs/actions/diy-scene/action",
-			"PropertyInspectorPath": "pi/diy-scene.html",
+			"PropertyInspectorPath": "ui/diy-scene.html",
 			"Tooltip": "Sets the DIY scene of a device",
 			"States": [
 				{

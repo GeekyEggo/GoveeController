@@ -11,5 +11,8 @@
 		"jest.config.ts": "babel.config.json",
 		"package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .npmrc",
 		"README.md": "LICENSE, CHANGELOG.md"
-	}
+	},
+	"jira-plugin.workingProject": "",
+	"npm.packageManager": "yarn",
+	"npm.scriptExplorerAction": "run"
 }

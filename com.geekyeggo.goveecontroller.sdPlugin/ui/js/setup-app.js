@@ -75,14 +75,14 @@
 		}
 	}
 
-	customElements.define("govee-setup", GoveeSetup);
+	customElements.define("setup-app", GoveeSetup);
 
 	let localApiKey = null;
 	let isDeviceCollectionDirty = false;
 
 	/* Handles toggling of the desired panel. */
 	const showSettings = function (canShowSettings) {
-		const setup = document.querySelectorAll("govee-setup")[0];
+		const setup = document.querySelectorAll("setup-app")[0];
 		const settings = document.getElementById("settings");
 
 		const show = function (elem) {

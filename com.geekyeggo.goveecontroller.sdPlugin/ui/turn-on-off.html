@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+	<head lang="en-us">
+		<meta charset="utf-8" />
+		<title>Govee Controller | On / Off Settings</title>
+
+		<!-- <link rel="stylesheet" href="./css/main.css" /> -->
+		<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+		<script src="./js/setup-app.js"></script>
+	</head>
+
+	<body>
+		<div id="settings" class="container hidden">
+			<sdpi-item label="Device">
+				<sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh label-setting="deviceName"></sdpi-select>
+			</sdpi-item>
+
+			<sdpi-item label="Action">
+				<sdpi-select setting="operation" label-setting="deviceName" placeholder="" default="">
+					<option value="" disabled selected hidden></option>
+					<option value="0">Toggle On/Off</option>
+					<option value="1">Turn On</option>
+					<option value="2">Turn Off</option>
+				</sdpi-select>
+			</sdpi-item>
+		</div>
+
+		<setup-app class="hidden"></setup-app>
+	</body>
+</html>
