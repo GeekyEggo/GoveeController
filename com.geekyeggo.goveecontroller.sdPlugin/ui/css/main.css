@@ -1,4 +1,17 @@
-.hidden {
-	display: none;
-	visibility: collapse;
+.sdpi-item-value.error,
+.sdpi-item-value.success {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.sdpi-item-value.error {
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+.sdpi-item-value.success {
+    color: #155724;
+    background-color: #d4edda;
 }
