@@ -31,7 +31,10 @@
 					"TitleAlignment": "bottom"
 				}
 			],
-			"Controllers": ["Keypad", "Encoder"],
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
 			"Encoder": {
 				"layout": "$B1",
 				"TriggerDescription": {
