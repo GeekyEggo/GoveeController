@@ -16,6 +16,7 @@ const cache = new Map<
 	}
 >();
 
+
 /**
  * Schedules the {@link fn} function to be executed; calling this function again with the same {@link id} will cause the previous {@link fn} execution to be debounced.
  * @param id Debounce identifier.

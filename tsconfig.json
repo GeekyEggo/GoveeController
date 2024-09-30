@@ -5,10 +5,12 @@
 			"node"
 		],
 		"module": "ES2022",
-		"moduleResolution": "Bundler"
+		"moduleResolution": "Bundler",
+		"sourceMap": true
 	},
 	"include": [
-		"src/**/*.ts"
+		"src/**/*.ts",
+    "src/**/*.js"
 	],
 	"exclude": [
 		"node_modules"

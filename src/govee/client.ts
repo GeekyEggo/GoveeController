@@ -312,8 +312,13 @@ class GoveeClient {
 	 * @returns The headers.
 	 */
 	private async getHeaders(): Promise<RawAxiosRequestHeaders> {
-		apiKey ??= (await streamDeck.settings.getGlobalSettings<GlobalSettings>()).apiKey;
-		if (apiKey === undefined) {
+		const globalSettings = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
+		console.log('Global settings in getHeaders:', globalSettings);
+		
+		const apiKey = globalSettings.apiKey;
+		console.log('Extracted API key:', apiKey);
+
+		if (!apiKey) {
 			throw new Error("Govee API key has not been set.");
 		}
 

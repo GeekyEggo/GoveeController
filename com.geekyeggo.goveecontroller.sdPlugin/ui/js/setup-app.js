@@ -1,121 +1,207 @@
-(function () {
-	class GoveeSetup extends HTMLElement {
-		/**
-		 * Sets the disabled state of the child elements.
-		 * @param {any} value The disabled state.
-		 */
-		set disabled(value) {
-			this.input.disabled = value;
-			this.button.disabled = value;
-		}
+/**
+ * Wraps the current element with an `sdpi-item` element and sets the provided label.
+ * `sdpi-item` is a special element in the library that provides layout and styling.
+ * @param {string} label - The label to set on the wrapper element.
+ * @returns {HTMLElement} The wrapper element containing the current element.
+ */
+Element.prototype.wrapWithLabel = function (label) {
+	const wrapper = document.createElement("sdpi-item");
+	wrapper.setAttribute("label", label);
+	wrapper.appendChild(this);
+	return wrapper;
+};
 
-		/**
-		 * Sets the error text.
-		 * @param {string} value The text.
-		 */
-		set errorText(value) {
-			this.response.setAttribute("text", value);
-			this.response.classList.remove("hidden");
-		}
+console.log("setup-app.js is being loaded");
 
-		/**
-		 * Invoked each time the custom element is appended into a document-connected element
-		 */
-		connectedCallback() {
-			const container = document.createElement("div");
-			container.classList.add("container");
+// Add this check
+if (typeof SDPIComponents === 'undefined') {
+    console.error('SDPIComponents is not defined. SDPI Components library may not have loaded correctly.');
+} else {
+    console.log('SDPIComponents is available:', SDPIComponents);
+}
 
-			// Input text field for API key.
-			this.input = document.createElement("sdpi-text");
-			this.input.setAttribute("label", "Api Key");
-			container.appendChild(this.input);
+function initializePlugin() {
+    try {
+        class GoveeSetup extends HTMLElement {
+            constructor() {
+                super();
+                console.log("GoveeSetup constructor called");
+                this.input = null;
+                this.response = null;
+                this.connectButton = null;
+            }
+            /**
+             * Sets the disabled state of the child elements.
+             * @param {boolean} value The disabled state.
+             */
+            set disabled(value) {
+                    // this.input.disabled = false;
+                    // this.button.disabled = false;
+            }
 
-			// Conect button.
-			this.button = document.createElement("sdpi-button");
-			this.button.setAttribute("value", "Connect");
-			this.button.addEventListener("click", () => this.connect());
-			container.appendChild(this.button);
+            /**
+             * Sets the error text.
+             * @param {string} value The text.
+             */
+            set errorText(value) {
+                this.response.setAttribute("text", value);
+                this.response.classList.remove("hidden");
+            }
 
-			// Result of connecting when failure.
-			this.response = document.createElement("sdpi-content");
-			this.response.classList.add("hidden");
-			container.appendChild(this.response);
+            /**
+             * Invoked each time the custom element is appended into a document-connected element.
+             */
+            connectedCallback() {
+                console.log("GoveeSetup connectedCallback called");
+                const container = document.createElement("div");
+                container.classList.add("container");
 
-			// Helper text.
-			const helper = document.createElement("div");
-			helper.classList.add("row");
-			helper.innerHTML = `
-                <div class="col-content">
-                    <strong>How to:</strong>
-                    <ol>
-                        <li>Open the Govee app.</li>
-                        <li>Go to the user tab > "About Us".</li>
-                        <li>Select "Apply for API Key".</li>
-                    </ol>
-                </div>`;
+                const apiKeyInput = document.createElement("sdpi-textfield");
+                apiKeyInput.setAttribute("name", "api-key");
+                apiKeyInput.setAttribute("placeholder", "Enter your API Key");
+                apiKeyInput.id = "api-key-input";
+                this.input = apiKeyInput;
 
-			container.appendChild(helper);
+                const apiKeyInputWrapper = document.createElement("sdpi-item");
+                apiKeyInputWrapper.setAttribute("label", "API Key");
+                apiKeyInputWrapper.appendChild(apiKeyInput);
+                container.appendChild(apiKeyInputWrapper);
 
-			this.appendChild(container);
-		}
+                const connectButtonWrapper = document.createElement("sdpi-item");
+                connectButtonWrapper.setAttribute("label", "Connect");
 
-		/*
-		 * Attempts to connect to the Govee API.
-		 */
-		async connect() {
-			this.disabled = true;
-			this.errorText = "Connecting...";
+                const connectButton = document.createElement("sdpi-button");
+                connectButton.textContent = "Connect"; // Use textContent instead of setAttribute
+                connectButton.id = "connect-button";
+                this.connectButton = connectButton;
+                connectButton.addEventListener("click", () => this.connect());
 
-			const response = await window.streamDeckClient.get("ConnectAsync", { apiKey: this.input.value });
+                connectButtonWrapper.appendChild(connectButton);
+                container.appendChild(connectButtonWrapper);
 
-			if (!response.payload.data.isSuccess) {
-				this.errorText = `Setup failed: ${response.payload.data.message || "Connecting failed, please try again"}`;
-				this.disabled = false;
-			}
-		}
-	}
+                // Result of connecting when failure.
+                this.response = document.createElement("sdpi-content");
+                this.response.classList.add("hidden");
+                container.appendChild(this.response);
 
-	customElements.define("setup-app", GoveeSetup);
+                // Helper text.
+                const helper = document.createElement("div");
+                helper.classList.add("row");
+                helper.innerHTML = `
+                    <div class="col-content">
+                        <strong>How to:</strong>
+                        <ol>
+                            <li>Open the Govee app.</li>
+                            <li>Go to the user tab > "About Us".</li>
+                            <li>Select "Apply for API Key".</li>
+                        </ol>
+                    </div>`;
 
-	let localApiKey = null;
-	let isDeviceCollectionDirty = false;
+                container.appendChild(helper);
 
-	/* Handles toggling of the desired panel. */
-	const showSettings = function (canShowSettings) {
-		const setup = document.querySelectorAll("setup-app")[0];
-		const settings = document.getElementById("settings");
+                this.appendChild(container);
+            }
 
-		const show = function (elem) {
-			elem.classList.remove("hidden");
-		};
-		const hide = function (elem) {
-			elem.classList.add("hidden");
-		};
+            /*
+             * Attempts to connect to the Govee API.
+             */
+            async connect() {
+                this.response.textContent = "Connecting...";
+                this.response.classList.remove("hidden");
 
-		console.log("canShowSettings", canShowSettings);
-		if (canShowSettings) {
-			if (isDeviceCollectionDirty) {
-				console.log("refreshing");
-				document.querySelectorAll("sdpi-select[setting='deviceId']")[0].refresh();
-			}
+                const payload = {
+                    apiKey: this.input.value
+                };
 
-			show(settings);
-			hide(setup);
-		} else {
-			show(setup);
-			hide(settings);
-		}
-	};
+                console.log('Attempting to set global settings:', payload);
 
-	/* Monitor global settings changing. */
-	SDPIComponents.streamDeckClient.didReceiveGlobalSettings.subscribe((globalSettings) => {
-		const apiKey = globalSettings.payload?.settings?.apiKey;
-		isDeviceCollectionDirty = apiKey != localApiKey;
-		localApiKey = apiKey;
+                try {
+                    await SDPIComponents.streamDeckClient.setGlobalSettings(payload);
+                    console.log('Global settings set successfully');
 
-		showSettings(!!apiKey);
-	});
+                    this.response.textContent = "Connected successfully!";
+                    showSettings(true);
+                } catch (error) {
+                    console.error("Error during connection:", error);
+                    this.response.textContent = "An error occurred while connecting. Please try again.";
+                }
+            }
+        }
 
-	/* Invoke a request for the global settings. */
-	SDPIComponents.streamDeckClient.getGlobalSettings();
-})();
+        customElements.define("setup-app", GoveeSetup);
+        console.log("GoveeSetup custom element defined");
+
+        let localApiKey = null;
+        let isDeviceCollectionDirty = false;
+
+        /* Handles toggling of the desired panel. */
+        const showSettings = function (canShowSettings) {
+            console.log("showSettings called with:", canShowSettings);
+            const setup = document.querySelector("setup-app");
+            const settings = document.getElementById("settings");
+
+            console.log("setup element:", setup);
+            console.log("settings element:", settings);
+
+            if (canShowSettings) {
+                if (isDeviceCollectionDirty) {
+                    console.log("refreshing");
+                    document.querySelector("sdpi-select[setting='deviceId']").refresh();
+                }
+            
+                settings.classList.remove("hidden");
+                setup.classList.add("hidden");
+                console.log("Showing settings, hiding setup");
+            } else {
+                setup.classList.remove("hidden");
+                settings.classList.add("hidden");
+                console.log("Showing setup, hiding settings");
+            }
+        };
+
+        /* Monitor global settings changing. */
+        SDPIComponents.streamDeckClient.didReceiveGlobalSettings.subscribe((event) => {
+            console.log('Received Global Settings Event:', event);
+            const globalSettings = event.payload.settings;
+            console.log('Extracted Global Settings:', globalSettings);
+
+            let apiKey;
+            if (globalSettings && globalSettings.payload && globalSettings.payload.apiKey) {
+                apiKey = globalSettings.payload.apiKey;
+            } else if (globalSettings && globalSettings.apiKey) {
+                apiKey = globalSettings.apiKey;
+            }
+
+            console.log('Extracted API Key:', apiKey);
+            isDeviceCollectionDirty = apiKey !== localApiKey;
+            localApiKey = apiKey;
+
+            showSettings(!!apiKey);
+        });
+
+        /* Invoke a request for the global settings. */
+        SDPIComponents.streamDeckClient.getGlobalSettings().then((globalSettings) => {
+            console.log('Initial global settings:', globalSettings);
+            // ... (existing code)
+        });
+    } catch (error) {
+        console.error('Error initializing plugin:', error);
+    }
+}
+
+// Call the initialization function when the document is fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePlugin);
+} else {
+    initializePlugin();
+}
+
+async function getDevices() {
+    try {
+        const response = await SDPIComponents.streamDeckClient.send("sendToPlugin", { event: "getDevices" });
+        return response.payload.items;
+    } catch (error) {
+        console.error("Error fetching devices:", error);
+        return [];
+    }
+}

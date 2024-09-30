@@ -5,14 +5,15 @@
 		<title>Govee Controller | On / Off Settings</title>
 
 		<!-- <link rel="stylesheet" href="./css/main.css" /> -->
-		<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+		<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js" onerror="console.error('Failed to load SDPI Components')"></script>
 		<script src="./js/setup-app.js"></script>
 	</head>
 
 	<body>
+		<p id="debug-text">If you can see this, the HTML is loading correctly.</p>
 		<div id="settings" class="container hidden">
 			<sdpi-item label="Device">
-				<sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh label-setting="deviceName"></sdpi-select>
+				<sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh hot-reload label-setting="deviceName"></sdpi-select>
 			</sdpi-item>
 
 			<sdpi-item label="Action">
@@ -25,6 +26,6 @@
 			</sdpi-item>
 		</div>
 
-		<setup-app class="hidden"></setup-app>
+		<setup-app class="container"></setup-app>
 	</body>
 </html>
