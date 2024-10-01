@@ -1,28 +1,49 @@
 <!doctype html>
 <html>
-	<head lang="en-us">
-		<meta charset="utf-8" />
-		<title>Govee Controller | Color Temperature</title>
 
-		<!-- <link rel="stylesheet" href="./css/main.css" /> -->
-		<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
-		<script src="./js/setup-app.js"></script>
-	</head>
+<head lang="en-us">
+  <meta charset="utf-8" />
+  <title>Govee Controller | Color Temperature</title>
 
-	<body>
-		<div id="settings" class="hidden">
-			<sdpi-item label="Device">
-				<sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh label-setting="deviceName"></sdpi-select>
-			</sdpi-item>
+  <!-- <link rel="stylesheet" href="./css/main.css" /> -->
+  <script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+  <script src="./js/setup-app.js"></script>
+</head>
 
-			<sdpi-item label="Temperature">
-				<sdpi-range setting="temperature" default="50" min="0" max="100" step="1" showlabels>
-					<span slot="min">Warm</span>
-					<span slot="max">Cool</span>
-				</sdpi-range>
-			</sdpi-item>
-		</div>
+<body>
 
-		<setup-app class="hidden"></setup-app>
-	</body>
+  <div class="sdpi-wrapper">
+    <sdpi-item label="API Key">
+      <div class="sdpi-item-group">
+        <sdpi-textfield id="api-key-input" name="api-key" placeholder="Enter your API Key"></sdpi-textfield>
+        <sdpi-button id="refresh-api-key" class="sdpi-item-value">Reset API Key</sdpi-button>
+      </div>
+    </sdpi-item>
+
+    <sdpi-item label="Connect">
+      <sdpi-button id="connect-button">Connect</sdpi-button>
+    </sdpi-item>
+
+    <div class="sdpi-item">
+      <div id="message" class="sdpi-item-value hidden"></div>
+    </div>
+
+
+    <div id="settings" class="hidden">
+      <sdpi-item label="Device">
+        <sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh
+          label-setting="deviceName"></sdpi-select>
+      </sdpi-item>
+
+      <sdpi-item label="Temperature">
+        <sdpi-range setting="temperature" default="50" min="0" max="100" step="1" showlabels>
+          <span slot="min">Warm</span>
+          <span slot="max">Cool</span>
+        </sdpi-range>
+      </sdpi-item>
+    </div>
+
+  </div>
+</body>
+
 </html>
