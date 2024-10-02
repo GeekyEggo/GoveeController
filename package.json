@@ -1,11 +1,13 @@
 {
+	"version": "1.3.0",
 	"scripts": {
 		"build": "rollup -c",
-		"bundle": "./dist/DistributionTool.exe -b -i ./com.geekyeggo.goveecontroller.sdPlugin -o ./dist/",
-		"clean": "rm -f ./dist/com.geekyeggo.goveecontroller.streamDeckPlugin",
-		"dist": "npm run build && npm run clean && npm run bundle",
+		"watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.geekyeggo.goveecontroller\"",
+		"pack": "npm run pack:create && npm run pack:git",
+		"pack:create": "sd pack com.geekyeggo.goveecontroller.sdPlugin -f -o dist --version $npm_package_version",
+		"pack:git": "git add -A com.geekyeggo.goveecontroller.sdPlugin dist",
 		"postinstall": "sd link com.geekyeggo.goveecontroller.sdPlugin",
-		"watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.geekyeggo.goveecontroller\""
+		"version": "npm run build && npm run pack"
 	},
 	"devDependencies": {
 		"@elgato/cli": "^1.0.0",
