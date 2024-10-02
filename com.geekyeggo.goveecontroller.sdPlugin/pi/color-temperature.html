@@ -25,7 +25,23 @@
 		</sdpi-item>
 	</div>
 
-	<govee-setup class="hidden"></govee-setup>
+	<div id="setup" class="hidden">
+		<sdpi-item label="API Key">
+			<sdpi-password id="apiKey" global setting="unverifiedApiKey"
+				placeholder="API key from the Govee"></sdpi-password>
+		</sdpi-item>
+		<sdpi-item>
+			<sdpi-button id="connect">Connect</sdpi-button>
+			<div id="errorMessage" class="hidden">Failed to connect, please try again.</div>
+		</sdpi-item>
+		<sdpi-item label="Guide" class="guide">
+			<ol>
+				<li>Open the Govee app</li>
+				<li>Go to settings</li>
+				<li>Select "Apply for API Key"</li>
+			</ol>
+		</sdpi-item>
+	</div>
 </body>
 
 </html>
