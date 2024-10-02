@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head lang="en-gb">
+	<meta charset="utf-8">
+	<title>Govee Controller | Brightness</title>
+
+	<link rel="stylesheet" href="./css/main.css" />
+	<script>
+		function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
+			const { payload: { controller } } = JSON.parse(inActionInfo);
+			if (controller === "Encoder") {
+				document.querySelector("sdpi-item[label='Brightness']").remove();
+			}
+		}
+	</script>
+	<script src="./js/sdpi-components.js"></script>
+	<script src="./js/setup.js"></script>
+</head>
+
+<body>
+	<div id="settings" class="hidden">
+		<sdpi-item label="Device">
+			<sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh
+				label-setting="deviceName"></sdpi-select>
+		</sdpi-item>
+
+		<sdpi-item label="Brightness">
+			<sdpi-range setting="brightness" default="50" min="0" max="100" step="1" showlabels></sdpi-range>
+		</sdpi-item>
+	</div>
+
+	<div id="setup" class="hidden">
+		<sdpi-item label="API Key">
+			<sdpi-password id="apiKey" global setting="unverifiedApiKey"
+				placeholder="API key from the Govee"></sdpi-password>
+		</sdpi-item>
+		<sdpi-item>
+			<sdpi-button id="connect">Connect</sdpi-button>
+			<div id="errorMessage" class="hidden">Failed to connect, please try again.</div>
+		</sdpi-item>
+		<sdpi-item label="Guide" class="guide">
+			<ol>
+				<li>Open the Govee app</li>
+				<li>Go to settings</li>
+				<li>Select "Apply for API Key"</li>
+			</ol>
+		</sdpi-item>
+	</div>
+</body>
+
+</html>

@@ -2,9 +2,7 @@ name: Bug Report
 description: File a bug report to help improve the plugin.
 labels:
   - "\U0001F41E bug"
-assignees:
-  - GeekyEggo
-  
+
 body:
   - type: checkboxes
     id: pre-checks
@@ -13,9 +11,9 @@ body:
       options:
         - label: The device is connected to WiFi.
           required: true
-        - label: The device is supported by [Govees API](https://govee-public.s3.amazonaws.com/developer-docs/GoveeAPIReference.pdf).
+        - label: The device is supported by [Govee's API](https://developer.govee.com/docs/support-product-model).
           required: true
-        
+
   - type: dropdown
     id: os
     attributes:
@@ -25,7 +23,7 @@ body:
         - Windows
     validations:
       required: true
-      
+
   - type: textarea
     id: device
     attributes:
@@ -33,7 +31,7 @@ body:
       description: Please include the device model number, and the type of device, e.g. lightstrip.
     validations:
       required: true
-    
+
   - type: textarea
     id: description
     attributes:

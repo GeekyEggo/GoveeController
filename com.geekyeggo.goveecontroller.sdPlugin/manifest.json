@@ -1,0 +1,116 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"UUID": "com.geekyeggo.goveecontroller",
+	"Name": "Govee Controller",
+	"Version": "1.3.1.0",
+	"Author": "GeekyEggo",
+	"URL": "https://github.com/GeekyEggo/GoveeController",
+	"Actions": [
+		{
+			"Name": "On / Off",
+			"UUID": "com.geekyeggo.goveecontroller.turnonoff",
+			"Icon": "imgs/actions/turn-on-off/action",
+			"PropertyInspectorPath": "pi/turn-on-off.html",
+			"Tooltip": "Turns a device on or off",
+			"States": [
+				{
+					"Image": "imgs/actions/turn-on-off/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Brightness",
+			"UUID": "com.geekyeggo.goveecontroller.brightness",
+			"Icon": "imgs/actions/brightness/action",
+			"Tooltip": "Sets the brightness of a device",
+			"PropertyInspectorPath": "pi/brightness.html",
+			"States": [
+				{
+					"Image": "imgs/actions/brightness/key",
+					"TitleAlignment": "bottom"
+				}
+			],
+			"Controllers": [
+				"Keypad"
+			]
+		},
+		{
+			"Name": "Color",
+			"UUID": "com.geekyeggo.goveecontroller.color",
+			"Icon": "imgs/actions/color/action",
+			"Tooltip": "Sets the color of a device",
+			"PropertyInspectorPath": "pi/color.html",
+			"States": [
+				{
+					"Image": "imgs/actions/color/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Color Temperature",
+			"UUID": "com.geekyeggo.goveecontroller.colortemperature",
+			"Icon": "imgs/actions/color-temperature/Action",
+			"Tooltip": "Sets the color temperature of a device",
+			"PropertyInspectorPath": "pi/color-temperature.html",
+			"States": [
+				{
+					"Image": "imgs/actions/color-temperature/Key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Scene",
+			"UUID": "com.geekyeggo.goveecontroller.light-scene",
+			"Icon": "imgs/actions/light-scene/action",
+			"PropertyInspectorPath": "pi/light-scene.html",
+			"Tooltip": "Sets the light scene of a device",
+			"States": [
+				{
+					"Image": "imgs/actions/light-scene/key",
+					"TitleAlignment": "bottom"
+				}
+			],
+			"VisibleInActionsList": false
+		},
+		{
+			"Name": "DIY",
+			"UUID": "com.geekyeggo.goveecontroller.diy-scene",
+			"Icon": "imgs/actions/diy-scene/action",
+			"PropertyInspectorPath": "pi/diy-scene.html",
+			"Tooltip": "Sets the DIY scene of a device",
+			"States": [
+				{
+					"Image": "imgs/actions/diy-scene/key",
+					"TitleAlignment": "bottom"
+				}
+			],
+			"VisibleInActionsList": false
+		}
+	],
+	"Category": "Govee Controller",
+	"CategoryIcon": "imgs/plugin/category",
+	"CodePath": "bin/plugin.js",
+	"Description": "Take control of your Govee lights with the push of a button!",
+	"Icon": "imgs/plugin/icon",
+	"Nodejs": {
+		"Version": "20",
+		"Debug": "enabled"
+	},
+	"SDKVersion": 2,
+	"Software": {
+		"MinimumVersion": "6.4"
+	},
+	"OS": [
+		{
+			"MinimumVersion": "10",
+			"Platform": "windows"
+		},
+		{
+			"MinimumVersion": "10.11",
+			"Platform": "mac"
+		}
+	]
+}
