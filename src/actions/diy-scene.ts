@@ -1,4 +1,4 @@
-import streamDeck, { action, DidReceiveSettingsEvent, KeyDownEvent, SendToPluginEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
+import streamDeck, { DidReceiveSettingsEvent, KeyDownEvent, SendToPluginEvent, SingletonAction, action, type Action } from "@elgato/streamdeck";
 
 import { goveeClient } from "../govee/client";
 import { DataSourceRequest, DataSourceResponse, trySendDevices } from "../ui";
@@ -63,7 +63,7 @@ export class DIYScene extends SingletonAction<DIYSceneSettings> {
 	 * @param action DIY scene Stream Deck Action.
 	 * @param deviceId Device identifier whose DIY scenes should be selected.
 	 */
-	private async sendDiyScenes(action: Action, deviceId: string | undefined): Promise<void> {
+	private async sendDiyScenes(action: Action<DIYSceneSettings>, deviceId: string | undefined): Promise<void> {
 		if (deviceId === undefined) {
 			return;
 		}
@@ -103,17 +103,12 @@ export class DIYScene extends SingletonAction<DIYSceneSettings> {
 			}
 		};
 
-		await action.sendToPropertyInspector({
+		await streamDeck.ui.current?.sendToPropertyInspector({
 			event: GET_SCENES_EVENT,
 			items: await getDIYScenes()
 		} satisfies DataSourceResponse);
 	}
 }
-
-/**
- * Set DIY scene action.
- */
-type Action = WillAppearEvent<DIYSceneSettings>["action"];
 
 /**
  * Settings for {@link DIYScene}.

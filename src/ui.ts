@@ -1,4 +1,4 @@
-import streamDeck, { SendToPluginEvent } from "@elgato/streamdeck";
+import streamDeck, { SendToPluginEvent, type JsonObject, type JsonValue } from "@elgato/streamdeck";
 import type { CapabilityIdentifier } from "./govee/capability";
 import { goveeClient } from "./govee/client";
 
@@ -7,8 +7,8 @@ import { goveeClient } from "./govee/client";
  * @param ev Source event.
  * @returns `true` when the payload is requesting the devices; otherwise `false`.
  */
-export function isRequestingDevices(ev: SendToPluginEvent<object, object>): boolean {
-	return ev.payload !== null && "event" in ev.payload && typeof ev.payload.event === "string" && ev.payload.event === "getDevices";
+export function isRequestingDevices(ev: SendToPluginEvent<JsonValue, JsonObject>): boolean {
+	return ev.payload !== null && typeof ev.payload === "object" && "event" in ev.payload && typeof ev.payload.event === "string" && ev.payload.event === "getDevices";
 }
 
 /**
@@ -16,7 +16,7 @@ export function isRequestingDevices(ev: SendToPluginEvent<object, object>): bool
  * @param ev Action the payload is associated with.
  * @param capability Payload provided by the property inspector.
  */
-export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, object>, capability: CapabilityIdentifier): Promise<void> {
+export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, JsonObject>, capability: CapabilityIdentifier): Promise<void> {
 	if (!isRequestingDevices(ev)) {
 		return;
 	}
@@ -27,7 +27,7 @@ export async function trySendDevices(ev: SendToPluginEvent<DataSourceRequest, ob
 		}
 
 		const devices = await goveeClient.getDevices();
-		ev.action.sendToPropertyInspector({
+		streamDeck.ui.current?.sendToPropertyInspector({
 			event: ev.payload.event,
 			items: devices
 				.filter((d) => d.capabilities.findIndex((c) => c.instance === capability.instance && c.type === capability.type) >= 0)

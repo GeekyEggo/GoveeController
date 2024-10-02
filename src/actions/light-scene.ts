@@ -103,7 +103,7 @@ export class LightScene extends SingletonAction<LightSceneSettings> {
 			}
 		};
 
-		await action.sendToPropertyInspector({
+		await streamDeck.ui.current?.sendToPropertyInspector({
 			event: GET_SCENES_EVENT,
 			items: await getLightScenes()
 		} satisfies DataSourceResponse);

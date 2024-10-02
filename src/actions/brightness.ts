@@ -1,4 +1,14 @@
-import streamDeck, { Action, action, DialRotateEvent, DidReceiveSettingsEvent, KeyDownEvent, SendToPluginEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
+import streamDeck, {
+	Action,
+	DialRotateEvent,
+	DidReceiveSettingsEvent,
+	KeyDownEvent,
+	SendToPluginEvent,
+	SingletonAction,
+	WillAppearEvent,
+	action,
+	type DialAction
+} from "@elgato/streamdeck";
 
 import { clearDebounce, debounce } from "../debounce";
 import { goveeClient } from "../govee/client";
@@ -96,7 +106,7 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 		}
 
 		// When the action is an encoder, set the layout.
-		if (ev.payload.controller === "Encoder") {
+		if (ev.action.isDial()) {
 			await this.setFeedback(ev.action, ev.payload.settings, 0.2);
 		}
 	}
@@ -128,7 +138,9 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 				goveeClient.setBrightness(device, brightness);
 			}
 
-			await action.showOk();
+			if (action.isKey()) {
+				await action.showOk();
+			}
 		} catch (e) {
 			action.showAlert();
 			streamDeck.logger.error("Failed to set brightness of device.", e);
@@ -141,7 +153,7 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 	 * @param settings Brightness settings.
 	 * @param opacity Opacity of the feedback.
 	 */
-	private async setFeedback(action: Action, settings: BrightnessSettings, opacity: 0.2 | 1): Promise<void> {
+	private async setFeedback(action: DialAction, settings: BrightnessSettings, opacity: 0.2 | 1): Promise<void> {
 		const brightness = settings.brightness ?? defaultBrightness;
 		await action.setFeedback({
 			value: {
