@@ -31,14 +31,7 @@
 					"TitleAlignment": "bottom"
 				}
 			],
-			"Controllers": ["Keypad", "Encoder"],
-			"Encoder": {
-				"layout": "$B1",
-				"TriggerDescription": {
-					"Touch": "Turn on / off",
-					"Rotate": "Set brightness"
-				}
-			}
+			"Controllers": ["Keypad"]
 		},
 		{
 			"Name": "Color",
