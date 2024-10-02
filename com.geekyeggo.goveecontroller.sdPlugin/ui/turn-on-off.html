@@ -1,53 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-us">
-<head>
-    <meta charset="utf-8" />
-    <title>Govee Controller | On / Off Settings</title>
-    <script src="https://sdpi-components.dev/releases/v3/sdpi-components.js" onerror="console.error('Failed to load SDPI Components')"></script>
-    <script src="./js/setup-app.js"></script>
-    <link rel="stylesheet" href="css/main.css">
-</head>
-<body>
-    <div class="sdpi-wrapper">
-        <sdpi-item label="API Key">
-            <div class="sdpi-item-group">
-                <sdpi-textfield id="api-key-input" name="api-key" placeholder="Enter your API Key"></sdpi-textfield>
-                <sdpi-button id="refresh-api-key" class="sdpi-item-value">Reset API Key</sdpi-button>
-            </div>
-        </sdpi-item>
-        
-        <sdpi-item label="Connect">
-            <sdpi-button id="connect-button">Connect</sdpi-button>
-        </sdpi-item>
-        
-        <div class="sdpi-item">
-            <div id="message" class="sdpi-item-value hidden"></div>
-        </div>
+	<head>
+		<meta charset="utf-8" />
+		<title>Govee Controller | On / Off Settings</title>
+		<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js" onerror="console.error('Failed to load SDPI Components')"></script>
+		<script src="./js/setup-app.js"></script>
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body>
+		<div class="sdpi-wrapper">
+			<sdpi-item label="API Key">
+				<div class="sdpi-item-group">
+					<sdpi-textfield id="api-key-input" name="api-key" placeholder="Enter your API Key"></sdpi-textfield>
+					<sdpi-button id="refresh-api-key" class="sdpi-item-value">Reset API Key</sdpi-button>
+				</div>
+			</sdpi-item>
 
-        <div id="device-settings" class="hidden">
-            <sdpi-item label="Device">
-                <sdpi-select id="device-select" setting="deviceId" placeholder="Select a device" datasource="getDevices" show-refresh hot-reload label-setting="deviceName"></sdpi-select>
-            </sdpi-item>
+			<sdpi-item label="Connect">
+				<sdpi-button id="connect-button">Connect</sdpi-button>
+			</sdpi-item>
 
-            <sdpi-item label="Action">
-                <sdpi-select id="action-select" setting="operation" placeholder="Select an action" default="">
-                    <option value="" disabled selected hidden></option>
-                    <option value="0">Toggle On/Off</option>
-                    <option value="1">Turn On</option>
-                    <option value="2">Turn Off</option>
-                </sdpi-select>
-            </sdpi-item>
-        </div>
+			<div class="sdpi-item">
+				<div id="message" class="sdpi-item-value hidden"></div>
+			</div>
 
-        <sdpi-item label="How to get an API Key">
-            <sdpi-content>
-                <ol>
-                    <li>Open the Govee app.</li>
-                    <li>Go to the user tab > "About Us".</li>
-                    <li>Select "Apply for API Key".</li>
-                </ol>
-            </sdpi-content>
-        </sdpi-item>
-    </div>
-</body>
+			<div id="device-settings" class="hidden">
+				<sdpi-item label="Device">
+					<sdpi-select id="device-select" setting="deviceId" placeholder="Select a device" datasource="getDevices" show-refresh hot-reload label-setting="deviceName"></sdpi-select>
+				</sdpi-item>
+
+				<sdpi-item label="Action">
+					<sdpi-select id="action-select" setting="operation" placeholder="Select an action" default="">
+						<option value="" disabled selected hidden></option>
+						<option value="0">Toggle On/Off</option>
+						<option value="1">Turn On</option>
+						<option value="2">Turn Off</option>
+					</sdpi-select>
+				</sdpi-item>
+			</div>
+
+			<sdpi-item label="How to get an API Key">
+				<sdpi-content>
+					<ol>
+						<li>Open the Govee app.</li>
+						<li>Go to the user tab > "About Us".</li>
+						<li>Select "Apply for API Key".</li>
+					</ol>
+				</sdpi-content>
+			</sdpi-item>
+		</div>
+	</body>
 </html>

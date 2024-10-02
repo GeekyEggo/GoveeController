@@ -1,54 +1,41 @@
 <!doctype html>
 <html>
+	<head lang="en-us">
+		<meta charset="utf-8" />
+		<title>Govee Controller | Brightness</title>
 
-<head lang="en-us">
-  <meta charset="utf-8" />
-  <title>Govee Controller | Brightness</title>
+		<link rel="stylesheet" href="./css/main.css" />
+		<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+		<script src="./js/setup-app.js"></script>
+	</head>
 
-  <link rel="stylesheet" href="./css/main.css" />
-  <script>
-    function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
-      const {
-        payload: { controller }
-      } = JSON.parse(inActionInfo);
-      if (controller === "Encoder") {
-        document.querySelector("sdpi-item[label='Brightness']").remove();
-      }
-    }
-  </script>
-  <script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
-  <script src="./js/setup-app.js"></script>
-</head>
+	<body>
+		<div class="sdpi-wrapper">
+			<sdpi-item label="API Key">
+				<sdpi-textfield id="api-key-input" name="api-key" placeholder="Enter your API Key"></sdpi-textfield>
+			</sdpi-item>
 
-<body>
+			<sdpi-item label="refresh-button">
+				<sdpi-button id="refresh-api-key" class="sdpi-item-value">Reset API Key</sdpi-button>
+			</sdpi-item>
 
-  <div class="sdpi-wrapper">
-    <sdpi-item label="API Key">
-      <div class="sdpi-item-group">
-        <sdpi-textfield id="api-key-input" name="api-key" placeholder="Enter your API Key"></sdpi-textfield>
-        <sdpi-button id="refresh-api-key" class="sdpi-item-value">Reset API Key</sdpi-button>
-      </div>
-    </sdpi-item>
+			<sdpi-item label="Connect">
+				<sdpi-button id="connect-button">Connect</sdpi-button>
+			</sdpi-item>
 
-    <sdpi-item label="Connect">
-      <sdpi-button id="connect-button">Connect</sdpi-button>
-    </sdpi-item>
+			<div class="sdpi-item">
+				<div id="message" class="sdpi-item-value hidden"></div>
+			</div>
 
-    <div class="sdpi-item">
-      <div id="message" class="sdpi-item-value hidden"></div>
-    </div>
+			<div id="settings" class="hidden">
+				<sdpi-item label="Device">
+					<sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh label-setting="deviceName"></sdpi-select>
+				</sdpi-item>
 
-    <div id="settings" class="hidden">
-      <sdpi-item label="Device">
-        <sdpi-select setting="deviceId" placeholder="" datasource="getDevices" show-refresh
-          label-setting="deviceName"></sdpi-select>
-      </sdpi-item>
-
-      <sdpi-item label="Brightness">
-        <sdpi-range setting="brightness" default="50" min="0" max="100" step="1" showlabels></sdpi-range>
-      </sdpi-item>
-    </div>
-  </div>
-</body>
-
+				<sdpi-item label="Brightness">
+					<sdpi-range setting="brightness" default="50" min="0" max="100" step="1" showlabels></sdpi-range>
+				</sdpi-item>
+			</div>
+		</div>
+	</body>
 </html>
