@@ -11,7 +11,7 @@
 
 </div>
 
-A Stream Deck plugin for controlling your [Govee](https://govee.com) devices.
+Stream Deck plugin for controlling your [Govee](https://govee.com) devices.
 
 ## ⚡ Actions
 
