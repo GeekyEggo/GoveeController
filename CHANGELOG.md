@@ -1,5 +1,11 @@
 ﻿# Change Log
 
+### 1.3.0
+
+### ⭐ Added
+
+-   Add support for Govee's new API.
+
 ## v1.2.3
 
 ### ⭐ Added
