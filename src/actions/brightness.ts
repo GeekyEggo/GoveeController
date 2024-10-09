@@ -18,7 +18,7 @@ import { DataSourceRequest, trySendDevices } from "../ui";
 /**
  * Default brightness.
  */
-const defaultBrightness = 25;
+const defaultBrightness = 50;
 
 /**
  * Sets the brightness of a device.
@@ -45,8 +45,11 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 			payload: { settings, ticks }
 		} = ev;
 
+		const increment = settings.increment ?? 5;
+
 		// Determine the new brightness, persist it, and set the feedback.
-		settings.brightness = clamp((settings.brightness ?? defaultBrightness) + ticks * 5, 5, 100);
+		settings.brightness = clamp((settings.brightness ?? defaultBrightness) + ticks * increment, 5, 100);
+
 		await action.setSettings(settings);
 		await action.setFeedback({
 			value: {
@@ -73,6 +76,10 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 	 */
 	public onDidReceiveSettings(ev: DidReceiveSettingsEvent<BrightnessSettings>): void {
 		ev.action.setTitle(ev.payload.settings.deviceName ?? "Brightness");
+		ev.action.setSettings({
+			...ev.payload.settings,
+			increment: ev.payload.settings.increment ?? 5
+		});
 	}
 
 	/**
@@ -102,6 +109,12 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 		// Standardize the settings.
 		if (typeof ev.payload.settings.brightness === "string") {
 			ev.payload.settings.brightness = parseInt(ev.payload.settings.brightness);
+			await ev.action.setSettings(ev.payload.settings);
+		}
+
+		// Set the increment
+		if (typeof ev.payload.settings.increment === "string") {
+			ev.payload.settings.increment = parseInt(ev.payload.settings.increment);
 			await ev.action.setSettings(ev.payload.settings);
 		}
 
@@ -164,7 +177,8 @@ export class Brightness extends SingletonAction<BrightnessSettings> {
 				opacity,
 				value: brightness
 			},
-			title: settings.deviceName ?? "Brightness"
+			title: settings.deviceName ?? "Brightness",
+			increment: settings.increment ?? 5
 		});
 	}
 
@@ -214,4 +228,9 @@ type BrightnessSettings = {
 	 * The device name.
 	 */
 	deviceName?: string;
+
+	/**
+	 * The brightness increment.
+	 */
+	increment?: number;
 };

@@ -31,9 +31,10 @@
 					"TitleAlignment": "bottom"
 				}
 			],
-			"Controllers": [
-				"Keypad"
-			]
+			"Encoder": {
+				"layout": "$B1"
+			},
+			"Controllers": ["Keypad", "Encoder"]
 		},
 		{
 			"Name": "Color",
